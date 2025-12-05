@@ -25,6 +25,33 @@ def create_tables():
         )
     """)
 
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS enrollment (
+            id INT PRIMARY KEY AUTO_INCREMENT,
+            student_id INT NOT NULL,
+            course_id INT NOT NULL,
+            enrolled_date DATE,
+            
+            FOREIGN KEY (student_id) REFERENCES users(user_id),
+            FOREIGN KEY (course_id) REFERENCES courses(course_id),
+
+            UNIQUE (student_id, course_id)
+        )
+    """)
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS lectures (
+            lecture_id INT PRIMARY KEY AUTO_INCREMENT,
+            course_id INT NOT NULL,
+            title VARCHAR(200) NOT NULL,
+            file_path VARCHAR(255),
+            video_link VARCHAR(255),
+            upload_date DATE,
+            
+            FOREIGN KEY (course_id) REFERENCES courses(course_id)
+        )
+    """)
+
     db.get_connection().commit()
 
 if __name__ == "__main__":
