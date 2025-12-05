@@ -1,0 +1,14 @@
+<h2>Lectures</h2>
+{% for lec in lectures %}
+    <div>
+        <h3>{{ lec.title }}</h3>
+
+        {% if lec.file_path %}
+            <a href="/{{ lec.file_path }}">Download File</a>
+        {% endif %}
+
+        {% if lec.video_link %}
+            <p>Video: <a href="{{ lec.video_link }}">{{ lec.video_link }}</a></p>
+        {% endif %}
+    </div>
+{% endfor %}
