@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Grade Submission</h2>
+<form method="POST">
+    <input type="number" name="grade" placeholder="Grade" required><br>
+    <textarea name="feedback" placeholder="Feedback" required></textarea><br>
+    <button type="submit">Save</button>
+</form>
+{% endblock %}

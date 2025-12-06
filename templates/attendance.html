@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Attendance - {{ course.title }}</h2>
+
+{% if role == 'teacher' %}
+<form method="POST">
+  <table border="1">
+    <tr>
+      <th>Student</th>
+      <th>Status</th>
+    </tr>
+    {% for s in students %}
+      <tr>
+        <td>{{ s.name }}</td>
+        <td>
+          <select name="status_{{ s.user_id }}">
+            <option value="Present">Present</option>
+            <option value="Absent">Absent</option>
+            <option value="Excused">Excused</option>
+          </select>
+        </td>
+      </tr>
+    {% endfor %}
+  </table>
+  <button type="submit">Save Attendance</button>
+</form>
+{% endif %}
+
+<h3>Previous Records</h3>
+<ul>
+  {% for r in records %}
+    <li>{{ r.date }} - {{ r.student_name }}: {{ r.status }}</li>
+  {% endfor %}
+</ul>
+{% endblock %}

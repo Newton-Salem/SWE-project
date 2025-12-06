@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Assignments for {{ course.title }}</h2>
+
+{% if role == 'teacher' %}
+  <a href="{{ url_for('assignment.create_assignment', course_id=course.course_id) }}">Create Assignment</a>
+{% endif %}
+
+<ul>
+  {% for a in assignments %}
+    <li>
+      <strong>{{ a.title }}</strong> (Due: {{ a.due_date }})
+      {% if role == 'student' %}
+        - <a href="{{ url_for('assignment.submit_assignment', assignment_id=a.assignment_id) }}">Submit</a>
+      {% else %}
+        - <a href="{{ url_for('assignment.view_submissions', assignment_id=a.assignment_id) }}">View Submissions</a>
+      {% endif %}
+    </li>
+  {% endfor %}
+</ul>
+{% endblock %}
