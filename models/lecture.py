@@ -1,4 +1,3 @@
-
 class Lecture:
     def __init__(self, lecture_id, course_id, title, file_path, video_link, upload_date):
         self.lecture_id = lecture_id
