@@ -1,3 +1,5 @@
+
+
 class Assignment:
     def __init__(self, assignment_id, course_id, title, description, due_date, max_grade):
         self.assignment_id = assignment_id
@@ -6,3 +8,18 @@ class Assignment:
         self.description = description
         self.due_date = due_date
         self.max_grade = max_grade
+
+    @classmethod
+    def from_row(cls, cursor, row):
+        if not row:
+            return None
+        cols = [c[0] for c in cursor.description]
+        data = dict(zip(cols, row))
+        return cls(
+            assignment_id=data.get("assignment_id"),
+            course_id=data.get("course_id"),
+            title=data.get("title"),
+            description=data.get("description"),
+            due_date=data.get("due_date"),
+            max_grade=data.get("max_grade"),
+        )

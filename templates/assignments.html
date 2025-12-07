@@ -1,21 +1,23 @@
-{% extends "base.html" %}
-{% block content %}
-<h2>Assignments for {{ course.title }}</h2>
+<!doctype html>
+<html>
+<body>
+  <h2>Create Assignment (Course {{ course_id }})</h2>
+  <form method="post">
+    <label>Title</label><br>
+    <input type="text" name="title" required><br>
+    <label>Description</label><br>
+    <textarea name="description"></textarea><br>
+    <label>Due Date (YYYY-MM-DD)</label><br>
+    <input type="text" name="due_date" required><br>
+    <label>Max Grade</label><br>
+    <input type="number" name="max_grade" required><br>
+    <button type="submit">Create</button>
+  </form>
 
-{% if role == 'teacher' %}
-  <a href="{{ url_for('assignment.create_assignment', course_id=course.course_id) }}">Create Assignment</a>
-{% endif %}
-
-<ul>
-  {% for a in assignments %}
-    <li>
-      <strong>{{ a.title }}</strong> (Due: {{ a.due_date }})
-      {% if role == 'student' %}
-        - <a href="{{ url_for('assignment.submit_assignment', assignment_id=a.assignment_id) }}">Submit</a>
-      {% else %}
-        - <a href="{{ url_for('assignment.view_submissions', assignment_id=a.assignment_id) }}">View Submissions</a>
-      {% endif %}
-    </li>
-  {% endfor %}
-</ul>
-{% endblock %}
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for cat,msg in messages %}
+      <p>{{ msg }}</p>
+    {% endfor %}
+  {% endwith %}
+</body>
+</html>

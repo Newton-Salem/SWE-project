@@ -1,14 +1,21 @@
-<h2>Lectures</h2>
-{% for lec in lectures %}
-    <div>
-        <h3>{{ lec.title }}</h3>
+<!doctype html>
+<html>
+<body>
+  <h2>Upload Lecture (Course {{ course_id }})</h2>
+  <form method="post" enctype="multipart/form-data">
+    <label>Title</label><br>
+    <input type="text" name="title" required><br>
+    <label>PDF File</label><br>
+    <input type="file" name="file"><br>
+    <label>Video Link (optional)</label><br>
+    <input type="text" name="video_link"><br>
+    <button type="submit">Upload</button>
+  </form>
 
-        {% if lec.file_path %}
-            <a href="/{{ lec.file_path }}">Download File</a>
-        {% endif %}
-
-        {% if lec.video_link %}
-            <p>Video: <a href="{{ lec.video_link }}">{{ lec.video_link }}</a></p>
-        {% endif %}
-    </div>
-{% endfor %}
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for cat,msg in messages %}
+      <p>{{ msg }}</p>
+    {% endfor %}
+  {% endwith %}
+</body>
+</html>
