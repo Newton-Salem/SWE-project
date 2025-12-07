@@ -1,11 +1,24 @@
+from flask import Blueprint, render_template, request, redirect, url_for, flash, session
+from services.auth_service import AuthService
 
-from flask import Blueprint, render_template, request, redirect, session
-from DAO.user_dao import UserDAO
-from werkzeug.security import check_password_hash, generate_password_hash
+auth_bp = Blueprint("auth", __name__)
+auth_service = AuthService()
 
-auth_bp = Blueprint('auth', __name__)
+@auth_bp.route("/register", methods=["GET", "POST"])
+def register():
+    if request.method == "POST":
+        name = request.form["name"]
+        email = request.form["email"]
+        password = request.form["password"]
+        role = request.form["role"]
 
-user_dao = UserDAO()
+        ok, msg = auth_service.register_user(name, email, password, role)
+        flash(msg, "success" if ok else "danger")
+        if ok:
+            return redirect(url_for("auth.login"))
+
+    return render_template("auth/register.html")
+
 
 @auth_bp.route("/login", methods=["GET", "POST"])
 def login():
@@ -13,33 +26,27 @@ def login():
         email = request.form["email"]
         password = request.form["password"]
 
-        user = user_dao.get_user_by_email(email)
+        user = auth_service.authenticate(email, password)
+        if not user:
+            flash("Invalid email or password", "danger")
+            return render_template("auth/login.html")
 
-        if user and check_password_hash(user.password, password):
-            session["user_id"] = user.user_id
-            session["role"] = user.role
+        session["user_id"] = user.user_id
+        session["role"] = user.role
 
-            if user.role == "teacher":
-                return redirect("/teacher/dashboard")
-            elif user.role == "student":
-                return redirect("/student/dashboard")
-            elif user.role == "admin":
-                return redirect("/admin/panel")
+        if user.role == "teacher":
+            return redirect(url_for("course.teacher_dashboard"))
+        elif user.role == "student":
+            return redirect(url_for("course.student_dashboard"))
+        else:
+            return redirect(url_for("admin.users"))
 
-        return render_template("login.html", error="Invalid email or password")
-
-    return render_template("login.html")
+    return render_template("auth/login.html")
 
 
-@auth_bp.route("/register", methods=["GET", "POST"])
-def register():
-    if request.method == "POST":
-        name = request.form["name"]
-        email = request.form["email"]
-        password = generate_password_hash(request.form["password"])
+@auth_bp.route("/logout")
+def logout():
+    session.clear()
+    return redirect(url_for("auth.login"))
 
-        user_dao.create_user(name, email, password)
-        return redirect("/login")
-
-    return render_template("register.html")
 

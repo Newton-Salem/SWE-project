@@ -1,3 +1,28 @@
-<h1>Welcome Teacher {{ name }}</h1>
-<a href="/courses/create">Create Course</a>
-<a href="/logout">Logout</a>
+<!doctype html>
+<html>
+<body>
+  <h2>Teacher Dashboard</h2>
+  <a href="{{ url_for('auth.logout') }}">Logout</a><br><br>
+
+  <a href="{{ url_for('course.create_course') }}">Create Course</a>
+
+  <h3>Your Courses</h3>
+  <ul>
+    {% for c in courses %}
+      <li>
+        {{ c.title }} ({{ c.code }})
+        <a href="{{ url_for('lecture.upload_lecture', course_id=c.course_id) }}">Upload Lecture</a>
+        <a href="{{ url_for('assignment.create_assignment', course_id=c.course_id) }}">Create Assignment</a>
+        <a href="{{ url_for('attendance.record_attendance', course_id=c.course_id) }}">Record Attendance</a>
+      </li>
+    {% endfor %}
+  </ul>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for cat,msg in messages %}
+      <p>{{ msg }}</p>
+    {% endfor %}
+  {% endwith %}
+</body>
+</html>
+

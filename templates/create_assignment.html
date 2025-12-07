@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Create Assignment</h2>
+<form method="POST">
+    <input type="text" name="title" placeholder="Title" required><br>
+    <textarea name="description" placeholder="Description"></textarea><br>
+    <input type="date" name="due_date" required><br>
+    <input type="number" name="max_grade" placeholder="Max Grade" required><br>
+    <button type="submit">Create</button>
+</form>
+{% endblock %} 
