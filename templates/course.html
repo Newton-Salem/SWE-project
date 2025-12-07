@@ -1,3 +1,30 @@
-<h2>{{ course.title }}</h2>
-<p>{{ course.description }}</p>
-<a href="/course/{{ course.course_id }}/lectures">View Lectures</a>
+<!doctype html>
+<html>
+<body>
+  {% if mode == "create" %}
+    <h2>Create Course</h2>
+    <form method="post">
+      <label>Title</label><br>
+      <input type="text" name="title" required><br>
+      <label>Code</label><br>
+      <input type="text" name="code" required><br>
+      <label>Description</label><br>
+      <textarea name="description"></textarea><br>
+      <button type="submit">Create</button>
+    </form>
+  {% else %}
+    <h2>Join Course</h2>
+    <form method="post">
+      <label>Course Code</label><br>
+      <input type="text" name="code" required><br>
+      <button type="submit">Join</button>
+    </form>
+  {% endif %}
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for cat,msg in messages %}
+      <p>{{ msg }}</p>
+    {% endfor %}
+  {% endwith %}
+</body>
+</html>
