@@ -2,7 +2,7 @@ from database.db import MySQLConnection
 from datetime import datetime
 
 class ChatDAO:
-    def _init_(self):
+    def __init__(self):
         db = MySQLConnection()
         self.conn = db.get_connection()
         self.cursor = db.get_cursor()
@@ -11,7 +11,7 @@ class ChatDAO:
         now = datetime.now()
         query = """
             INSERT INTO chat_messages (course_id, sender_id, message, timestamp)
-            VALUES (%s, %s, %s, %s)
+            VALUES (?, ?, ?, ?)
         """
         self.cursor.execute(query, (course_id, sender_id, message, now))
         self.conn.commit()
@@ -21,7 +21,7 @@ class ChatDAO:
             SELECT c.*, u.name AS sender_name
             FROM chat_messages c
             JOIN users u ON c.sender_id = u.user_id
-            WHERE course_id=%s
+            WHERE course_id=?
             ORDER BY timestamp ASC
         """, (course_id,))
         return self.cursor.fetchall()

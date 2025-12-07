@@ -1,7 +1,6 @@
-
 import pyodbc
 
-class MySQLConnection:   
+class MySQLConnection:  
     _instance = None
 
     def __new__(cls, *args, **kwargs):
@@ -12,15 +11,14 @@ class MySQLConnection:
     def __init__(self):
         if not hasattr(self, "_initialized"):
             try:
- 
                 self.connection = pyodbc.connect(
                     "DRIVER={ODBC Driver 17 for SQL Server};"
-                    "SERVER=localhost;"       
-                    "DATABASE=EduTrack;"     
-                    "Trusted_Connection=yes;" 
+                    "SERVER=localhost;"         
+                    "DATABASE=EduTrack;"
+                    "Trusted_Connection=yes;"
                 )
                 self.cursor = self.connection.cursor()
-                print("✔ Connected to SQL Server (Singleton)")
+                print("✔ Connected to SQL Server")
             except Exception as e:
                 print("❌ Error connecting to SQL Server:", e)
                 self.connection = None

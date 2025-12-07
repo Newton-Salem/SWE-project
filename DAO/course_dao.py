@@ -2,21 +2,21 @@ from database.db import MySQLConnection
 from datetime import date
 
 class CourseDAO:
-    def _init_(self):
+    def __init__(self):
         self.db = MySQLConnection()
         self.cursor = self.db.get_cursor()
 
     def create_course(self, teacher_id, title, description, code):
         query = """
             INSERT INTO courses (teacher_id, title, code, description)
-            VALUES (%s, %s, %s, %s)
+            VALUES ?, ?, ?, ?)
         """
         self.cursor.execute(query, (teacher_id, title, code, description))
         self.db.get_connection().commit()
         return self.cursor.lastrowid
 
     def join_course(self, student_id, course_code):
-        self.cursor.execute("SELECT course_id FROM courses WHERE code=%s", (course_code,))
+        self.cursor.execute("SELECT course_id FROM courses WHERE code=?", (course_code,))
         course = self.cursor.fetchone()
         if not course:
             return None
@@ -25,7 +25,7 @@ class CourseDAO:
 
         self.cursor.execute("""
             SELECT * FROM enrollment 
-            WHERE student_id=%s AND course_id=%s
+            WHERE student_id=? AND course_id=?
         """, (student_id, course_id))
         exists = self.cursor.fetchone()
 
@@ -34,7 +34,7 @@ class CourseDAO:
 
         self.cursor.execute("""
             INSERT INTO enrollment (student_id, course_id, enrolled_date)
-            VALUES (%s, %s, %s)
+            VALUES (?, ?, ?)
         """, (student_id, course_id, date.today()))
 
         self.db.get_connection().commit()
