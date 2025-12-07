@@ -1,5 +1,5 @@
 class Submission:
-    def _init_(self, submission_id, assignment_id, student_id, file_path, timestamp, grade, feedback):
+    def __init__(self, submission_id, assignment_id, student_id, file_path, timestamp, grade, feedback):
         self.submission_id = submission_id
         self.assignment_id = assignment_id
         self.student_id = student_id

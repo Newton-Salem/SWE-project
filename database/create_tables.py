@@ -1,4 +1,4 @@
-from database.db import MySQLConnection   
+from database.connection import MySQLConnection
 
 def create_tables():
     db = MySQLConnection()
@@ -17,13 +17,12 @@ def create_tables():
     END
     """)
 
-    
     cursor.execute("""
     IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'courses')
     BEGIN
         CREATE TABLE courses (
             course_id INT IDENTITY(1,1) PRIMARY KEY,
-            teacher_id INT,
+            teacher_id INT NOT NULL,
             title NVARCHAR(200),
             code NVARCHAR(20) UNIQUE,
             description NVARCHAR(MAX),
@@ -32,7 +31,6 @@ def create_tables():
     END
     """)
 
-   
     cursor.execute("""
     IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'enrollment')
     BEGIN
@@ -48,7 +46,6 @@ def create_tables():
     END
     """)
 
-    
     cursor.execute("""
     IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'lectures')
     BEGIN
@@ -96,7 +93,6 @@ def create_tables():
     END
     """)
 
-   
     cursor.execute("""
     IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'attendance')
     BEGIN
@@ -128,7 +124,6 @@ def create_tables():
     """)
 
     db.get_connection().commit()
-    print(" All tables created successfully on SQL Server!")
 
 if __name__ == "__main__":
     create_tables()

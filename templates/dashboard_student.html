@@ -1,3 +1,27 @@
-<h1>Welcome Student {{ name }}</h1>
-<a href="/courses">My Courses</a>
-<a href="/logout">Logout</a>
+<!doctype html>
+<html>
+<body>
+  <h2>Student Dashboard</h2>
+  <a href="{{ url_for('auth.logout') }}">Logout</a><br><br>
+
+  <form method="post" action="{{ url_for('course.join_course') }}">
+    <label>Join Course Code:</label>
+    <input type="text" name="code">
+    <button type="submit">Join</button>
+  </form>
+
+  <h3>Your Courses</h3>
+  <ul>
+    {% for c in courses %}
+      <li>{{ c.title }} ({{ c.code }})</li>
+    {% endfor %}
+  </ul>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for cat,msg in messages %}
+      <p>{{ msg }}</p>
+    {% endfor %}
+  {% endwith %}
+</body>
+</html>
+
