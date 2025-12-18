@@ -33,7 +33,7 @@ It aims to improve communication between **students and teachers** by providing 
 - **app.py** – Main application entry point  
 - **config.py** – Application configuration  
 - **controllers/** – Handles HTTP requests and app logic  
-- **models/** – Defines database models (Assignment, Attendance, ChatMessage, etc.)  
+- **models/** – Defines database models 
 - **repositories/** – Repository layer for database operations  
 - **services/** – Business logic layer  
 - **templates/** – HTML templates for web pages  
