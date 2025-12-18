@@ -42,9 +42,8 @@ It aims to improve communication between **students and teachers** by providing 
 ---
 
 ## 🚀 How to Run
-## Clone the repository:
-   
    ```bash
+//1.Clone the repository:
    git clone https://github.com/Newton-Salem/SWE-project.git
    
 //2.Navigate to the project folder:
