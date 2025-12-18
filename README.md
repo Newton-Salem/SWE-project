@@ -51,9 +51,9 @@ cd SWE-project
 
 3.Create and activate the virtual environment:
 python -m venv venv
-# Linux/Mac:
+### Linux/Mac:
 source venv/bin/activate
-# Windows:
+### Windows:
 venv\Scripts\activate
 
 4.Install dependencies:
