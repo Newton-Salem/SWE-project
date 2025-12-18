@@ -8,8 +8,6 @@ Developed by: Mohamed Salem, Ahmed Mahmoud, Habiba Mohammed
 ## 🎯 Project Overview
 **EduTrack** is a **web application** developed as a standalone system using the **MVC architecture**.  
 It aims to improve communication between **students and teachers** by providing an all-in-one platform where:  
-- Teachers can upload lectures, track attendance, assign grades, and communicate via a built-in chat.  
-- Students can view learning materials, monitor performance, and communicate efficiently.  
 
 ---
 
