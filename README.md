@@ -42,25 +42,25 @@ It aims to improve communication between **students and teachers** by providing 
 ---
 
 ## 🚀 How to Run
-## 1. Clone the repository:
+## Clone the repository:
    
    ```bash
    git clone https://github.com/Newton-Salem/SWE-project.git
    
-### 2.Navigate to the project folder:
+//2.Navigate to the project folder:
 cd SWE-project
 
-### 3.Create and activate the virtual environment:
+//3.Create and activate the virtual environment:
 python -m venv venv
-#### Linux/Mac:
+ Linux/Mac:
 source venv/bin/activate
-#### Windows:
+ Windows:
 venv\Scripts\activate
 
-### 4.Install dependencies:
+//4.Install dependencies:
 pip install -r requirements.txt
 
-### 5.Run the application:
+//5.Run the application:
 python app.py
 
-### Use the provided accounts or register new users to explore the functionalities
+//Use the provided accounts or register new users to explore the functionalities
