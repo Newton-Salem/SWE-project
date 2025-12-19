@@ -1,3 +1,5 @@
+from models import row_to_dict
+
 class ChatMessage:
     def __init__(self, chat_id, course_id, sender_id, message, timestamp):
         self.chat_id = chat_id
@@ -8,10 +10,9 @@ class ChatMessage:
 
     @classmethod
     def from_row(cls, cursor, row):
-        if not row:
+        data = row_to_dict(cursor, row)
+        if not data:
             return None
-        cols = [c[0] for c in cursor.description]
-        data = dict(zip(cols, row))
         return cls(
             chat_id=data.get("chat_id"),
             course_id=data.get("course_id"),

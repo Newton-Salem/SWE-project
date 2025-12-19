@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}EduTrack{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="{% if session.get('user_id') %}{{ url_for('course.teacher_dashboard' if session.get('role') == 'teacher' else 'course.student_dashboard' if session.get('role') == 'student' else 'admin.users') }}{% else %}{{ url_for('auth.login') }}{% endif %}" class="navbar-brand">EduTrack</a>
+            {% if session.get('user_id') %}
+            <ul class="navbar-nav">
+                {% if session.get('role') == 'teacher' %}
+                    <li><a href="{{ url_for('course.teacher_dashboard') }}">Dashboard</a></li>
+                    <li><a href="{{ url_for('course.create_course') }}">Create Course</a></li>
+                {% elif session.get('role') == 'student' %}
+                    <li><a href="{{ url_for('course.student_dashboard') }}">Dashboard</a></li>
+                    <li><a href="{{ url_for('course.join_course') }}">Join Course</a></li>
+                {% elif session.get('role') == 'admin' %}
+                    <li><a href="{{ url_for('admin.users') }}">Admin Panel</a></li>
+                {% endif %}
+                <li><a href="{{ url_for('auth.logout') }}">Logout</a></li>
+            </ul>
+            {% endif %}
+        </div>
+    </nav>
+
+    <div class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category if category != 'message' else 'info' }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </div>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
+

@@ -1,30 +1,46 @@
-<!doctype html>
-<html>
-<body>
-  {% if mode == "create" %}
-    <h2>Create Course</h2>
-    <form method="post">
-      <label>Title</label><br>
-      <input type="text" name="title" required><br>
-      <label>Code</label><br>
-      <input type="text" name="code" required><br>
-      <label>Description</label><br>
-      <textarea name="description"></textarea><br>
-      <button type="submit">Create</button>
-    </form>
-  {% else %}
-    <h2>Join Course</h2>
-    <form method="post">
-      <label>Course Code</label><br>
-      <input type="text" name="code" required><br>
-      <button type="submit">Join</button>
-    </form>
-  {% endif %}
+{% extends "base.html" %}
 
-  {% with messages = get_flashed_messages(with_categories=true) %}
-    {% for cat,msg in messages %}
-      <p>{{ msg }}</p>
-    {% endfor %}
-  {% endwith %}
-</body>
-</html>
+{% block title %}{% if mode == "create" %}Create Course{% else %}Join Course{% endif %} - EduTrack{% endblock %}
+
+{% block content %}
+<div style="max-width: 600px; margin: 2rem auto;">
+    <div class="card">
+        <div class="card-header">
+            <h2 class="card-title">{% if mode == "create" %}Create New Course{% else %}Join Course{% endif %}</h2>
+        </div>
+        {% if mode == "create" %}
+        <form method="post" style="padding: 1rem;">
+            <div class="form-group">
+                <label class="form-label" for="title">Course Title</label>
+                <input type="text" class="form-control" id="title" name="title" required placeholder="Enter course title">
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="code">Course Code (Optional - will be auto-generated if empty)</label>
+                <input type="text" class="form-control" id="code" name="code" placeholder="Enter course code (e.g., CS101)" style="text-transform: uppercase;">
+                <small style="color: #666;">Leave empty to auto-generate a code</small>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="description">Description</label>
+                <textarea class="form-control" id="description" name="description" rows="4" placeholder="Enter course description"></textarea>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Create Course</button>
+            </div>
+        </form>
+        {% else %}
+        <form method="post" style="padding: 1rem;">
+            <div class="form-group">
+                <label class="form-label" for="code">Course Code</label>
+                <input type="text" class="form-control" id="code" name="code" required placeholder="Enter course code" style="text-transform: uppercase;">
+            </div>
+            {% if error %}
+            <div class="alert alert-danger">{{ error }}</div>
+            {% endif %}
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Join Course</button>
+            </div>
+        </form>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

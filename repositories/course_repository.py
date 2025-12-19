@@ -32,3 +32,8 @@ class CourseRepository(BaseRepository):
         """, (student_id,))
         rows = self.cursor.fetchall()
         return [Course.from_row(self.cursor, r) for r in rows]
+
+    def get_by_id(self, course_id):
+        self.cursor.execute("SELECT * FROM courses WHERE course_id = ?", (course_id,))
+        row = self.cursor.fetchone()
+        return Course.from_row(self.cursor, row)

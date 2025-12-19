@@ -1,34 +1,52 @@
-<!doctype html>
-<html>
-<body>
-  <h2>Record Attendance (Course {{ course_id }})</h2>
-  <form method="post">
-    <table border="1">
-      <tr>
-        <th>Student</th>
-        <th>Status</th>
-      </tr>
-      {% for s in students %}
-        <tr>
-          <td>{{ s.name }}</td>
-          <td>
-            <input type="hidden" name="student_id" value="{{ s.user_id }}">
-            <select name="status">
-              <option value="Present">Present</option>
-              <option value="Absent">Absent</option>
-              <option value="Excused">Excused</option>
-            </select>
-          </td>
-        </tr>
-      {% endfor %}
-    </table>
-    <button type="submit">Save</button>
-  </form>
+{% extends "base.html" %}
 
-  {% with messages = get_flashed_messages(with_categories=true) %}
-    {% for cat,msg in messages %}
-      <p>{{ msg }}</p>
-    {% endfor %}
-  {% endwith %}
-</body>
-</html>
+{% block title %}Record Attendance - EduTrack{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Record Attendance</h2>
+    <a href="{{ url_for('course.teacher_dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
+</div>
+
+{% if students %}
+<div class="card">
+    <form method="post">
+        <div class="attendance-form">
+            <div class="attendance-row" style="background-color: #f8f9fa; font-weight: bold;">
+                <div class="attendance-student-name">Student Name</div>
+                <div style="flex: 1;">Attendance Status</div>
+            </div>
+            {% for student in students %}
+            <div class="attendance-row">
+                <div class="attendance-student-name">{{ student.get('name', student.name) }}</div>
+                <div class="attendance-radio-group">
+                    <div class="attendance-radio">
+                        <input type="radio" id="present_{{ student.get('user_id', student.user_id) }}" name="status_{{ student.get('user_id', student.user_id) }}" value="Present" required>
+                        <label for="present_{{ student.get('user_id', student.user_id) }}">Present</label>
+                    </div>
+                    <div class="attendance-radio">
+                        <input type="radio" id="absent_{{ student.get('user_id', student.user_id) }}" name="status_{{ student.get('user_id', student.user_id) }}" value="Absent">
+                        <label for="absent_{{ student.get('user_id', student.user_id) }}">Absent</label>
+                    </div>
+                    <div class="attendance-radio">
+                        <input type="radio" id="excused_{{ student.get('user_id', student.user_id) }}" name="status_{{ student.get('user_id', student.user_id) }}" value="Excused">
+                        <label for="excused_{{ student.get('user_id', student.user_id) }}">Excused</label>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% if error %}
+        <div class="alert alert-danger">{{ error }}</div>
+        {% endif %}
+        <div style="padding: 1rem; text-align: right;">
+            <button type="submit" class="btn btn-primary">Save Attendance</button>
+        </div>
+    </form>
+</div>
+{% else %}
+<div class="card">
+    <p class="text-center" style="color: #666; padding: 2rem;">No students enrolled in this course yet.</p>
+</div>
+{% endif %}
+{% endblock %}

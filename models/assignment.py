@@ -1,4 +1,4 @@
-
+from models import row_to_dict
 
 class Assignment:
     def __init__(self, assignment_id, course_id, title, description, due_date, max_grade):
@@ -11,10 +11,9 @@ class Assignment:
 
     @classmethod
     def from_row(cls, cursor, row):
-        if not row:
+        data = row_to_dict(cursor, row)
+        if not data:
             return None
-        cols = [c[0] for c in cursor.description]
-        data = dict(zip(cols, row))
         return cls(
             assignment_id=data.get("assignment_id"),
             course_id=data.get("course_id"),

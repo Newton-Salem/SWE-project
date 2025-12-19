@@ -1,21 +1,35 @@
-<!doctype html>
-<html>
-<body>
-  <h2>Upload Lecture (Course {{ course_id }})</h2>
-  <form method="post" enctype="multipart/form-data">
-    <label>Title</label><br>
-    <input type="text" name="title" required><br>
-    <label>PDF File</label><br>
-    <input type="file" name="file"><br>
-    <label>Video Link (optional)</label><br>
-    <input type="text" name="video_link"><br>
-    <button type="submit">Upload</button>
-  </form>
+{% extends "base.html" %}
 
-  {% with messages = get_flashed_messages(with_categories=true) %}
-    {% for cat,msg in messages %}
-      <p>{{ msg }}</p>
-    {% endfor %}
-  {% endwith %}
-</body>
-</html>
+{% block title %}Upload Lecture - EduTrack{% endblock %}
+
+{% block content %}
+<div style="max-width: 600px; margin: 2rem auto;">
+    <div class="card">
+        <div class="card-header">
+            <h2 class="card-title">Upload Lecture</h2>
+        </div>
+        <form method="post" enctype="multipart/form-data" style="padding: 1rem;">
+            <div class="form-group">
+                <label class="form-label" for="title">Lecture Title</label>
+                <input type="text" class="form-control" id="title" name="title" required placeholder="Enter lecture title">
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="file">PDF File (Max 10MB)</label>
+                <input type="file" class="form-control" id="file" name="file" accept=".pdf">
+                <small style="color: #666;">Only PDF files are allowed</small>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="video_link">Video Link (Optional)</label>
+                <input type="url" class="form-control" id="video_link" name="video_link" placeholder="https://example.com/video">
+                <small style="color: #666;">Enter a URL to an external video resource</small>
+            </div>
+            {% if error %}
+            <div class="alert alert-danger">{{ error }}</div>
+            {% endif %}
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Upload Lecture</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

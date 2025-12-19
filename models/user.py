@@ -1,3 +1,5 @@
+from models import row_to_dict
+
 class User:
     def __init__(self, user_id, name, email, password, role):
         self.user_id = user_id
@@ -8,10 +10,9 @@ class User:
 
     @classmethod
     def from_row(cls, cursor, row):
-        if not row:
+        data = row_to_dict(cursor, row)
+        if not data:
             return None
-        cols = [c[0] for c in cursor.description]
-        data = dict(zip(cols, row))
         return cls(
             user_id=data.get("user_id"),
             name=data.get("name"),

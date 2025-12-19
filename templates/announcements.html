@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}Announcements - {{ course.title }} - EduTrack{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Announcements - {{ course.title }}</h2>
+    <div>
+        {% if session.get('role') == 'teacher' %}
+        <a href="{{ url_for('announcement.create_announcement', course_id=course.course_id) }}" class="btn btn-primary">Create Announcement</a>
+        {% endif %}
+        <a href="{{ url_for('course.teacher_dashboard' if session.get('role') == 'teacher' else 'course.student_dashboard') }}" class="btn btn-secondary">Back</a>
+    </div>
+</div>
+
+{% if announcements %}
+<div class="course-list">
+    {% for announcement in announcements %}
+    <div class="course-card">
+        <h3>{{ announcement.get('title', announcement.title) }}</h3>
+        <p style="color: #666; margin: 0.5rem 0;"><strong>By:</strong> {{ announcement.get('teacher_name', 'Unknown') }}</p>
+        <p style="color: #666; margin: 0.5rem 0;"><strong>Date:</strong> {{ announcement.get('created_at', '') }}</p>
+        <div style="margin-top: 1rem; padding: 1rem; background-color: #f8f9fa; border-radius: 4px;">
+            {{ announcement.get('content', announcement.content) }}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="card">
+    <p class="text-center" style="color: #666; padding: 2rem;">No announcements yet.</p>
+</div>
+{% endif %}
+{% endblock %}
+

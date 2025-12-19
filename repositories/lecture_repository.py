@@ -17,3 +17,8 @@ class LectureRepository(BaseRepository):
         self.cursor.execute("SELECT * FROM lectures WHERE course_id = ?", (course_id,))
         rows = self.cursor.fetchall()
         return [Lecture.from_row(self.cursor, r) for r in rows]
+
+    def get_by_id(self, lecture_id):
+        self.cursor.execute("SELECT * FROM lectures WHERE lecture_id = ?", (lecture_id,))
+        row = self.cursor.fetchone()
+        return Lecture.from_row(self.cursor, row)

@@ -22,3 +22,12 @@ class AttendanceRepository(BaseRepository):
         rows = self.cursor.fetchall()
         cols = [c[0] for c in self.cursor.description]
         return [dict(zip(cols, r)) for r in rows]
+
+    def update_attendance(self, course_id, student_id, date, status):
+        """Update existing attendance record"""
+        self.cursor.execute("""
+            UPDATE attendance 
+            SET status = ?
+            WHERE course_id = ? AND student_id = ? AND date = ?
+        """, (status, course_id, student_id, date))
+        self.conn.commit()

@@ -1,28 +1,44 @@
-<!doctype html>
-<html>
-<body>
-  <h2>Teacher Dashboard</h2>
-  <a href="{{ url_for('auth.logout') }}">Logout</a><br><br>
+{% extends "base.html" %}
 
-  <a href="{{ url_for('course.create_course') }}">Create Course</a>
+{% block title %}Teacher Dashboard - EduTrack{% endblock %}
 
-  <h3>Your Courses</h3>
-  <ul>
-    {% for c in courses %}
-      <li>
-        {{ c.title }} ({{ c.code }})
-        <a href="{{ url_for('lecture.upload_lecture', course_id=c.course_id) }}">Upload Lecture</a>
-        <a href="{{ url_for('assignment.create_assignment', course_id=c.course_id) }}">Create Assignment</a>
-        <a href="{{ url_for('attendance.record_attendance', course_id=c.course_id) }}">Record Attendance</a>
-      </li>
+{% block content %}
+<div class="dashboard-grid">
+    <div class="dashboard-card">
+        <h3>Total Courses</h3>
+        <div class="stat-number">{{ courses|length }}</div>
+        <div class="stat-label">Active Courses</div>
+    </div>
+</div>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>My Courses</h2>
+    <a href="{{ url_for('course.create_course') }}" class="btn btn-primary">Create New Course</a>
+</div>
+
+{% if courses %}
+<div class="course-list">
+    {% for course in courses %}
+    <div class="course-card">
+        <h3>{{ course.title }}</h3>
+        <div class="course-code">Code: {{ course.code }}</div>
+        {% if course.description %}
+        <p style="color: #666; margin: 1rem 0;">{{ course.description[:100] }}{% if course.description|length > 100 %}...{% endif %}</p>
+        {% endif %}
+        <div class="d-flex gap-2" style="flex-wrap: wrap; margin-top: 1rem;">
+            <a href="{{ url_for('lecture.upload_lecture', course_id=course.course_id) }}" class="btn btn-sm btn-primary">Upload Lecture</a>
+            <a href="{{ url_for('assignment.create_assignment', course_id=course.course_id) }}" class="btn btn-sm btn-success">Create Assignment</a>
+            <a href="{{ url_for('attendance.record_attendance', course_id=course.course_id) }}" class="btn btn-sm btn-secondary">Record Attendance</a>
+            <a href="{{ url_for('chat.course_chat', course_id=course.course_id) }}" class="btn btn-sm btn-secondary">Chat</a>
+            <a href="{{ url_for('announcement.view_announcements', course_id=course.course_id) }}" class="btn btn-sm btn-secondary">Announcements</a>
+        </div>
+    </div>
     {% endfor %}
-  </ul>
-
-  {% with messages = get_flashed_messages(with_categories=true) %}
-    {% for cat,msg in messages %}
-      <p>{{ msg }}</p>
-    {% endfor %}
-  {% endwith %}
-</body>
-</html>
+</div>
+{% else %}
+<div class="card">
+    <p class="text-center" style="color: #666; padding: 2rem;">No courses yet. Create your first course to get started!</p>
+</div>
+{% endif %}
+{% endblock %}
 

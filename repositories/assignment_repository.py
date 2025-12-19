@@ -16,3 +16,8 @@ class AssignmentRepository(BaseRepository):
         self.cursor.execute("SELECT * FROM assignments WHERE course_id = ?", (course_id,))
         rows = self.cursor.fetchall()
         return [Assignment.from_row(self.cursor, r) for r in rows]
+
+    def get_by_id(self, assignment_id):
+        self.cursor.execute("SELECT * FROM assignments WHERE assignment_id = ?", (assignment_id,))
+        row = self.cursor.fetchone()
+        return Assignment.from_row(self.cursor, row)

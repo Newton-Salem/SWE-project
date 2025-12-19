@@ -34,12 +34,19 @@ def student_dashboard():
 @login_required("teacher")
 def create_course():
     if request.method == "POST":
-        title = request.form["title"]
-        code = request.form["code"]
-        description = request.form["description"]
-        course_service.create_course(session["user_id"], title, code, description)
-        flash("Course created", "success")
-        return redirect(url_for("course.teacher_dashboard"))
+        title = request.form.get("title", "").strip()
+        code = request.form.get("code", "").strip()
+        description = request.form.get("description", "").strip()
+        
+        success, message = course_service.create_course(
+            session["user_id"], title, code, description
+        )
+        flash(message, "success" if success else "danger")
+        
+        if success:
+            return redirect(url_for("course.teacher_dashboard"))
+        else:
+            return render_template("course.html", mode="create", error=message)
 
     return render_template("course.html", mode="create")
 
@@ -47,11 +54,13 @@ def create_course():
 @login_required("student")
 def join_course():
     if request.method == "POST":
-        code = request.form["code"]
-        ok, msg = course_service.join_course(session["user_id"], code)
-        flash(msg, "success" if ok else "danger")
-        if ok:
+        code = request.form.get("code", "").strip()
+        success, message = course_service.join_course(session["user_id"], code)
+        flash(message, "success" if success else "danger")
+        
+        if success:
             return redirect(url_for("course.student_dashboard"))
-        return render_template("course.html", mode="join")
+        else:
+            return render_template("course.html", mode="join", error=message)
 
     return render_template("course.html", mode="join")
