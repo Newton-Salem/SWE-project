@@ -64,3 +64,45 @@ def join_course():
             return render_template("course.html", mode="join", error=message)
 
     return render_template("course.html", mode="join")
+
+@course_bp.route("/edit/<int:course_id>", methods=["GET", "POST"])
+@login_required("teacher")
+def edit_course(course_id):
+    course = course_service.get_course_by_id(course_id)
+
+    if not course:
+        flash("Course not found", "danger")
+        return redirect(url_for("course.teacher_dashboard"))
+
+    if request.method == "POST":
+        title = request.form.get("title")
+        description = request.form.get("description")
+
+        success, msg = course_service.edit_course(
+            course_id,
+            session["user_id"],
+            title,
+            description
+        )
+
+        flash(msg, "success" if success else "danger")
+        if success:
+            return redirect(url_for("course.teacher_dashboard"))
+
+    return render_template("edit_course.html", course=course)
+
+def login_required(role=None):
+    def decorator(f):
+        def wrapper(*args, **kwargs):
+            if "user_id" not in session:
+                return redirect(url_for("auth.login"))
+
+            if role and session.get("role") != role:
+                flash("Unauthorized", "danger")
+                return redirect(url_for("auth.login"))
+
+            return f(*args, **kwargs)
+        wrapper.__name__ = f.__name__
+        return wrapper
+    return decorator
+

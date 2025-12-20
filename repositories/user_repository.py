@@ -1,20 +1,38 @@
 from repositories.base_repository import BaseRepository
 from models.user import User
 
+
 class UserRepository(BaseRepository):
     def __init__(self):
         super().__init__()
 
+    # =========================
+    # GET METHODS
+    # =========================
     def get_by_email(self, email):
-        self.cursor.execute("SELECT * FROM users WHERE email = ?", (email,))
+        self.cursor.execute(
+            "SELECT * FROM users WHERE email = ?",
+            (email,)
+        )
         row = self.cursor.fetchone()
-        return User.from_row(self.cursor, row)
+        return User.from_row(self.cursor, row) if row else None
 
     def get_by_id(self, user_id):
-        self.cursor.execute("SELECT * FROM users WHERE user_id = ?", (user_id,))
+        self.cursor.execute(
+            "SELECT * FROM users WHERE user_id = ?",
+            (user_id,)
+        )
         row = self.cursor.fetchone()
-        return User.from_row(self.cursor, row)
+        return User.from_row(self.cursor, row) if row else None
 
+    def get_all(self):
+        self.cursor.execute("SELECT * FROM users")
+        rows = self.cursor.fetchall()
+        return [User.from_row(self.cursor, row) for row in rows]
+
+    # =========================
+    # CREATE
+    # =========================
     def create_user(self, name, email, password_hash, role):
         self.cursor.execute("""
             INSERT INTO users (name, email, password, role)
@@ -22,10 +40,57 @@ class UserRepository(BaseRepository):
         """, (name, email, password_hash, role))
         self.conn.commit()
 
-    def get_all(self):
-        self.cursor.execute("SELECT * FROM users")
-        rows = self.cursor.fetchall()
-        users = []
-        for row in rows:
-            users.append(User.from_row(self.cursor, row))
-        return users
+    # =========================
+    # 🔐 FORGOT PASSWORD
+    # =========================
+    def set_reset_token(self, user_id, token, expiry):
+        self.cursor.execute("""
+            UPDATE users
+            SET reset_token = ?, reset_token_expiry = ?
+            WHERE user_id = ?
+        """, (token, expiry, user_id))
+        self.conn.commit()
+
+    def get_by_reset_token(self, token):
+        self.cursor.execute("""
+            SELECT *
+            FROM users
+            WHERE reset_token = ?
+              AND reset_token_expiry > GETDATE()
+        """, (token,))
+        row = self.cursor.fetchone()
+        return User.from_row(self.cursor, row) if row else None
+
+    def update_password(self, user_id, hashed_password):
+        self.cursor.execute("""
+            UPDATE users
+            SET password = ?, reset_token = NULL, reset_token_expiry = NULL
+            WHERE user_id = ?
+        """, (hashed_password, user_id))
+        self.conn.commit()
+
+    # =========================
+    # ❌ DELETE USER (FIXED)
+    # =========================
+    def delete(self, user_id):
+        """
+        Delete user safely by removing dependent records first
+        """
+
+        # 1️⃣ delete notifications
+        self.cursor.execute(
+            "DELETE FROM notifications WHERE user_id = ?",
+            (user_id,)
+        )
+
+        # (لو عندك جداول تانية مربوطة باليوزر
+        # زي submissions / enrollments
+        # ضيفي DELETE هنا بنفس الشكل)
+
+        # 2️⃣ delete user
+        self.cursor.execute(
+            "DELETE FROM users WHERE user_id = ?",
+            (user_id,)
+        )
+
+        self.conn.commit()

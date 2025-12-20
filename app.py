@@ -12,7 +12,6 @@ from controllers.chat_controller import chat_bp
 from controllers.file_controller import file_bp
 from controllers.announcement_controller import announcement_bp
 from controllers.notification_controller import notification_bp
-
 def create_app():
     """Application Factory Pattern"""
     app = Flask(__name__, static_folder='src/static')

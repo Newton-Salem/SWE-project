@@ -1,4 +1,6 @@
 # services/course_service.py
+from turtle import title
+from models import course
 from repositories.repository_factory import RepositoryFactory
 from repositories.enrollment_repository import EnrollmentRepository
 from datetime import date
@@ -86,3 +88,18 @@ class CourseService:
         # Enroll student
         self.enrollment_repo.enroll_student(student_id, course.course_id, date.today())
         return True, f"Successfully joined course: {course.title}"
+    
+    def edit_course(self, course_id, teacher_id, title, description):
+        course = self.course_repo.get_by_id(course_id)
+
+        if not course:
+            return False, "Course not found"
+
+        if course.teacher_id != teacher_id:
+            return False, "Unauthorized"
+
+        if not title.strip():
+            return False, "Course title is required"
+
+        self.course_repo.update_course(course_id, title.strip(), description.strip())
+        return True, "Course updated successfully"

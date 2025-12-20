@@ -21,3 +21,10 @@ class NotificationRepository(BaseRepository):
             ORDER BY created_at DESC
         """, (user_id,))
         return self.cursor.fetchall()
+    
+    def delete_by_user(self, user_id):
+        self.cursor.execute(
+            "DELETE FROM notifications WHERE user_id = ?",
+            (user_id,)
+            )
+        self.conn.commit()
