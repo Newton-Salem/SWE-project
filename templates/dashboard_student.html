@@ -39,9 +39,14 @@
         {% endif %}
         <div class="d-flex gap-2" style="flex-wrap: wrap; margin-top: 1rem;">
             <a href="{{ url_for('assignment.view_assignments', course_id=course.course_id) }}" class="btn btn-sm btn-primary">View Assignments</a>
-            <a href="{{ url_for('lecture.upload_lecture', course_id=course.course_id) }}" class="btn btn-sm btn-secondary">View Lectures</a>
-            <a href="{{ url_for('chat.course_chat', course_id=course.course_id) }}" class="btn btn-sm btn-secondary">Chat</a>
-            <a href="{{ url_for('announcement.view_announcements', course_id=course.course_id) }}" class="btn btn-sm btn-secondary">Announcements</a>
+            <a href="{{ url_for('lecture.view_lectures', course_id=course.course_id) }}" class="btn btn-sm btn-primary">View Lectures</a>
+            <a href="{{ url_for('chat.student_chat', course_id=course.course_id) }}"class="btn btn-sm btn-primary">Chat</a>
+            <a href="{{ url_for('announcement.view_announcements', course_id=course.course_id) }}" class="btn btn-sm btn-primary">Announcements</a>
+            <a href="{{ url_for('attendance.student_attendance', course_id=course.course_id) }}"
+   class="btn btn-sm btn-primary">
+   Attendance
+</a>
+
         </div>
     </div>
     {% endfor %}

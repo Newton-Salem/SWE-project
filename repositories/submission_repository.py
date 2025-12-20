@@ -38,3 +38,21 @@ class SubmissionRepository(BaseRepository):
             WHERE submission_id = ?
         """, (grade, feedback, submission_id))
         self.conn.commit()
+
+    def grade_submission(self, submission_id, grade, feedback):
+        self.cursor.execute("""
+            UPDATE submissions
+            SET grade = ?, feedback = ?
+            WHERE submission_id = ?
+        """, (grade, feedback, submission_id))
+        self.conn.commit()
+
+    def get_student_submission(self, assignment_id, student_id):
+     self.cursor.execute("""
+        SELECT *
+        FROM submissions
+        WHERE assignment_id = ? AND student_id = ?
+    """, (assignment_id, student_id))
+
+     return self.cursor.fetchone()
+

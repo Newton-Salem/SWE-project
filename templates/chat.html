@@ -1,32 +1,32 @@
 {% extends "base.html" %}
-
-{% block title %}Chat - {{ course.title }} - EduTrack{% endblock %}
+{% block title %}Chat{% endblock %}
 
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <h2>Course Chat - {{ course.title }}</h2>
-    <a href="{{ url_for('course.teacher_dashboard' if session.get('role') == 'teacher' else 'course.student_dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
+<h2>Chat</h2>
+
+<div class="card p-3 mb-3">
+    {% for msg in messages %}
+        <p>
+            <strong>{{ msg.sender_name }}:</strong>
+            {{ msg.message }}
+            <br>
+            <small>{{ msg.timestamp }}</small>
+        </p>
+        <hr>
+    {% endfor %}
 </div>
 
-<div class="chat-container">
-    <div class="chat-messages">
-        {% if messages %}
-            {% for msg in messages %}
-            <div class="chat-message">
-                <div class="chat-message-header">
-                    <span class="chat-message-sender">{{ msg.get('sender_name', 'Unknown') }}</span>
-                    <span class="chat-message-time">{{ msg.get('timestamp', '') }}</span>
-                </div>
-                <div>{{ msg.get('message', '') }}</div>
-            </div>
-            {% endfor %}
-        {% else %}
-            <p class="text-center" style="color: #666; padding: 2rem;">No messages yet. Start the conversation!</p>
-        {% endif %}
-    </div>
-    <form method="POST" class="chat-input-form">
-        <input type="text" name="message" class="chat-input" placeholder="Type a message..." required maxlength="1000">
-        <button type="submit" class="btn btn-primary">Send</button>
-    </form>
-</div>
+<form method="post">
+    <input type="text" name="message"
+           class="form-control mb-2"
+           placeholder="Type your message..."
+           required>
+    <button class="btn btn-primary">Send</button>
+</form>
+
+<a href="{{ url_for('course.student_dashboard' if session.role=='student'
+                    else 'course.teacher_dashboard') }}"
+   class="btn btn-secondary mt-3">
+   Back
+</a>
 {% endblock %}

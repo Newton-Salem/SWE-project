@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}Assignment Status{% endblock %}
+
+{% block content %}
+<h2>{{ assignment.title }}</h2>
+
+<p><strong>Description:</strong> {{ assignment.description }}</p>
+<p><strong>Due Date:</strong> {{ assignment.due_date }}</p>
+<p><strong>Max Grade:</strong> {{ assignment.max_grade }}</p>
+
+<hr>
+
+{% if submission %}
+    <!-- ✅ الطالب عمل Submit -->
+    <div class="alert alert-success">
+        ✔️ Assignment Submitted
+    </div>
+
+    <p><strong>Submitted File:</strong> {{ submission.file_path }}</p>
+
+    {% if submission.grade is not none %}
+        <!-- 🏅 متصحح -->
+        <div class="alert alert-info">
+            <strong>Grade:</strong> {{ submission.grade }} / {{ assignment.max_grade }}
+        </div>
+
+        <p><strong>Feedback:</strong></p>
+        <div class="alert alert-secondary">
+            {{ submission.feedback or "No feedback provided" }}
+        </div>
+    {% else %}
+        <!-- ⏳ لسه ما اتصححش -->
+        <div class="alert alert-warning">
+            ⏳ Submitted – Not graded yet
+        </div>
+    {% endif %}
+
+{% else %}
+    <!-- ❌ ما عملش Submit -->
+    <div class="alert alert-danger">
+        ❌ You have NOT submitted this assignment yet
+    </div>
+{% endif %}
+
+<a href="{{ url_for('course.student_dashboard') }}" class="btn btn-secondary">
+    Back
+</a>
+{% endblock %}

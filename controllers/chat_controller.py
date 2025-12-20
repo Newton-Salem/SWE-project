@@ -1,44 +1,53 @@
-from flask import Blueprint, render_template, request, redirect, url_for, session, flash
+from flask import Blueprint, render_template, request, redirect, session
 from services.chat_service import ChatService
-from services.course_service import CourseService
+from controllers.course_controller import login_required
 
 chat_bp = Blueprint("chat", __name__)
 chat_service = ChatService()
-course_service = CourseService()
 
-def login_required(f):
-    def wrapper(*args, **kwargs):
-        if "user_id" not in session:
-            return redirect(url_for("auth.login"))
-        return f(*args, **kwargs)
-    wrapper.__name__ = f.__name__
-    return wrapper
-
+# ================= STUDENT =================
 @chat_bp.route("/course/<int:course_id>/chat", methods=["GET", "POST"])
-@login_required
-def course_chat(course_id):
-    user_id = session["user_id"]
-    user_role = session.get("role")
-    
-    # Check access
-    can_access, message = chat_service.can_access_chat(course_id, user_id, user_role)
-    if not can_access:
-        flash(message, "danger")
-        return redirect(url_for("course.teacher_dashboard" if user_role == "teacher" else "course.student_dashboard"))
+@login_required("student")
+def student_chat(course_id):
+    student_id = session["user_id"]
 
     if request.method == "POST":
-        message_text = request.form.get("message", "").strip()
-        success, msg = chat_service.send_message(course_id, user_id, message_text)
-        flash(msg, "success" if success else "danger")
-        return redirect(url_for("chat.course_chat", course_id=course_id))
+        chat_service.send_message(
+            course_id,
+            student_id,   # صاحب الشات
+            student_id,   # sender = الطالب
+            request.form["message"]
+        )
+        return redirect(request.url)
 
-    course = course_service.course_repo.get_by_id(course_id)
-    if not course:
-        flash("Course not found", "danger")
-        return redirect(url_for("course.teacher_dashboard" if user_role == "teacher" else "course.student_dashboard"))
-    
-    messages = chat_service.get_messages(course_id)
-    return render_template("chat.html",
-                           course=course,
-                           messages=messages,
-                           user_id=user_id)
+    messages = chat_service.get_student_chat(course_id, student_id)
+    return render_template("chat.html", messages=messages)
+
+
+# ================= TEACHER =================
+@chat_bp.route("/course/<int:course_id>/teacher")
+@login_required("teacher")
+def teacher_students(course_id):
+    students = chat_service.get_students_with_chats(course_id)
+    return render_template(
+        "chat_students.html",
+        students=students,
+        course_id=course_id
+    )
+
+@chat_bp.route("/course/<int:course_id>/chat/<int:student_id>", methods=["GET", "POST"])
+@login_required("teacher")
+def teacher_chat(course_id, student_id):
+    teacher_id = session["user_id"]
+
+    if request.method == "POST":
+        chat_service.send_message(
+            course_id,
+            student_id,   # الشات تابع للطالب
+            teacher_id,   # sender = المدرس
+            request.form["message"]
+        )
+        return redirect(request.url)
+
+    messages = chat_service.get_student_chat(course_id, student_id)
+    return render_template("chat.html", messages=messages)

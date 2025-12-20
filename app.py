@@ -11,6 +11,7 @@ from controllers.admin_controller import admin_bp
 from controllers.chat_controller import chat_bp
 from controllers.file_controller import file_bp
 from controllers.announcement_controller import announcement_bp
+from controllers.notification_controller import notification_bp
 
 def create_app():
     """Application Factory Pattern"""
@@ -33,7 +34,7 @@ def create_app():
     app.register_blueprint(chat_bp, url_prefix="/chat")
     app.register_blueprint(file_bp, url_prefix="/file")
     app.register_blueprint(announcement_bp, url_prefix="/announcements")
-    
+    app.register_blueprint(notification_bp, url_prefix="/notifications")
     # Root route
     @app.route("/")
     def index():
@@ -46,7 +47,3 @@ app = create_app()
 
 if __name__ == "__main__":
     app.run(debug=True)
-
-
-
-

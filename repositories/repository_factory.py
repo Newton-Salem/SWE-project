@@ -8,6 +8,8 @@ from repositories.attendance_repository import AttendanceRepository
 from repositories.chat_repository import ChatRepository
 from repositories.enrollment_repository import EnrollmentRepository
 from repositories.announcement_repository import AnnouncementRepository
+from repositories.notification_repository import NotificationRepository
+
 
 class RepositoryFactory:
     @staticmethod
@@ -31,4 +33,8 @@ class RepositoryFactory:
             return EnrollmentRepository()
         if name == "announcement":
             return AnnouncementRepository()
+        if name == "notification":
+            return NotificationRepository()
         raise ValueError(f"Unknown repository: {name}")
+
+        

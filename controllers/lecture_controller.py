@@ -32,3 +32,36 @@ def upload_lecture(course_id):
             return render_template("lectures.html", course_id=course_id, error=message)
 
     return render_template("lectures.html", course_id=course_id)
+
+@lecture_bp.route("/view/<int:course_id>")
+@login_required()   # أي حد logged in
+def view_lectures(course_id):
+    lectures = lecture_service.get_lectures_by_course(course_id)
+    return render_template(
+        "view_lectures.html",
+        lectures=lectures,
+        course_id=course_id
+    )
+
+@lecture_bp.route("/delete/<int:lecture_id>")
+@login_required("teacher")
+def delete_lecture(lecture_id):
+    success, message = lecture_service.delete_lecture(lecture_id)
+    flash(message, "success" if success else "danger")
+    return redirect(request.referrer or url_for("course.teacher_dashboard"))
+
+@lecture_bp.route("/edit/<int:lecture_id>", methods=["GET", "POST"])
+@login_required("teacher")
+def edit_lecture(lecture_id):
+    if request.method == "POST":
+        title = request.form.get("title")
+        video_link = request.form.get("video_link")
+
+        success, message = lecture_service.edit_lecture(
+            lecture_id, title, video_link
+        )
+        flash(message, "success" if success else "danger")
+        return redirect(request.referrer)
+
+    lecture = lecture_service.get_lecture_by_id(lecture_id)
+    return render_template("edit_lecture.html", lecture=lecture)

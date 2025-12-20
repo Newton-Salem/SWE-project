@@ -1,6 +1,7 @@
 from repositories.base_repository import BaseRepository
 from models.assignment import Assignment
 
+
 class AssignmentRepository(BaseRepository):
     def __init__(self):
         super().__init__()
@@ -13,11 +14,31 @@ class AssignmentRepository(BaseRepository):
         self.conn.commit()
 
     def get_by_course(self, course_id):
-        self.cursor.execute("SELECT * FROM assignments WHERE course_id = ?", (course_id,))
-        rows = self.cursor.fetchall()
-        return [Assignment.from_row(self.cursor, r) for r in rows]
+        self.cursor.execute(
+            "SELECT * FROM assignments WHERE course_id = ?",
+            (course_id,)
+        )
+        return [
+            Assignment.from_row(self.cursor, r)
+            for r in self.cursor.fetchall()
+        ]
 
     def get_by_id(self, assignment_id):
-        self.cursor.execute("SELECT * FROM assignments WHERE assignment_id = ?", (assignment_id,))
+        self.cursor.execute(
+            "SELECT * FROM assignments WHERE assignment_id = ?",
+            (assignment_id,)
+        )
         row = self.cursor.fetchone()
         return Assignment.from_row(self.cursor, row)
+
+    # ✅ DELETE جوه الكلاس
+    def delete(self, assignment_id):
+        self.cursor.execute(
+            "DELETE FROM submissions WHERE assignment_id = ?",
+            (assignment_id,)
+        )
+        self.cursor.execute(
+            "DELETE FROM assignments WHERE assignment_id = ?",
+            (assignment_id,)
+        )
+        self.conn.commit()

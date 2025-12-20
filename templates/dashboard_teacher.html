@@ -25,13 +25,48 @@
         {% if course.description %}
         <p style="color: #666; margin: 1rem 0;">{{ course.description[:100] }}{% if course.description|length > 100 %}...{% endif %}</p>
         {% endif %}
-        <div class="d-flex gap-2" style="flex-wrap: wrap; margin-top: 1rem;">
-            <a href="{{ url_for('lecture.upload_lecture', course_id=course.course_id) }}" class="btn btn-sm btn-primary">Upload Lecture</a>
-            <a href="{{ url_for('assignment.create_assignment', course_id=course.course_id) }}" class="btn btn-sm btn-success">Create Assignment</a>
-            <a href="{{ url_for('attendance.record_attendance', course_id=course.course_id) }}" class="btn btn-sm btn-secondary">Record Attendance</a>
-            <a href="{{ url_for('chat.course_chat', course_id=course.course_id) }}" class="btn btn-sm btn-secondary">Chat</a>
-            <a href="{{ url_for('announcement.view_announcements', course_id=course.course_id) }}" class="btn btn-sm btn-secondary">Announcements</a>
-        </div>
+<div class="d-flex gap-2" style="flex-wrap: wrap; margin-top: 1rem;">
+
+    <!-- Lectures -->
+    <a href="{{ url_for('lecture.view_lectures', course_id=course.course_id) }}"
+       class="btn btn-sm btn-primary">
+        View Lectures
+    </a>
+
+    <a href="{{ url_for('lecture.upload_lecture', course_id=course.course_id) }}"
+       class="btn btn-sm btn-primary">
+        Upload Lecture
+    </a>
+
+    <!-- Assignments -->
+    <a href="{{ url_for('assignment.view_assignments', course_id=course.course_id) }}"
+       class="btn btn-sm btn-primary">
+        View Assignments
+    </a>
+
+    <a href="{{ url_for('assignment.create_assignment', course_id=course.course_id) }}"
+       class="btn btn-sm btn-primary">
+        Create Assignment
+    </a>
+
+    <!-- Other features -->
+    <a href="{{ url_for('attendance.record_attendance', course_id=course.course_id) }}"
+       class="btn btn-sm btn-primary">
+        Record Attendance
+    </a>
+
+    <a href="{{ url_for('chat.teacher_students', course_id=course.course_id) }}"
+        class="btn btn-sm btn-primary">
+         Student Chats
+    </a>
+
+
+    <a href="{{ url_for('announcement.view_announcements', course_id=course.course_id) }}"
+       class="btn btn-sm btn-primary">
+        Announcements
+    </a>
+</div>
+
     </div>
     {% endfor %}
 </div>
