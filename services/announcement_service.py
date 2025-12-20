@@ -11,7 +11,7 @@ class AnnouncementService:
         self.notification_service = NotificationService()
 
     # ==================================================
-    # CREATE ANNOUNCEMENT (TEACHER)
+    # CREATE ANNOUNCEMENT
     # ==================================================
     def create_announcement(self, course_id, teacher_id, title, content):
         course = self.course_repo.get_by_id(course_id)
@@ -21,38 +21,54 @@ class AnnouncementService:
         if course.teacher_id != teacher_id:
             return False, "Unauthorized"
 
-        if not title or not title.strip():
+        title = title.strip()
+        content = content.strip()
+
+        if not title:
             return False, "Title is required"
 
-        if not content or not content.strip():
+        if not content:
             return False, "Content is required"
 
-        # ---------- Save announcement ----------
+        # Save announcement
         self.announcement_repo.create_announcement(
-            course_id,
-            teacher_id,
-            title.strip(),
-            content.strip()
+            course_id=course_id,
+            teacher_id=teacher_id,
+            title=title,
+            content=content
         )
 
-        # ---------- Notify students ----------
+        # Notify students
         students = self.enrollment_repo.get_enrolled_students(course_id)
-
-        for row in students:
+        for student in students:
             self.notification_service.create_notification(
-                row.user_id,
-                f"New announcement in {course.title}: {title}",
-                "announcement",
-                None
+                user_id=student.user_id,
+                message=f"New announcement in {course.title}: {title}",
+                notification_type="announcement",
+                reference_id=None
             )
 
         return True, "Announcement created successfully"
 
     # ==================================================
-    # GET ANNOUNCEMENTS BY COURSE
+    # GET COURSE FOR TEACHER (AUTH CHECK)
     # ==================================================
-    def get_announcements_by_course(self, course_id):
-        return self.announcement_repo.get_by_course(course_id)
+    def get_course_for_teacher(self, course_id, teacher_id):
+        course = self.course_repo.get_by_id(course_id)
+        if not course or course.teacher_id != teacher_id:
+            return None
+        return course
+
+    # ==================================================
+    # GET COURSE + ANNOUNCEMENTS
+    # ==================================================
+    def get_course_announcements(self, course_id):
+        course = self.course_repo.get_by_id(course_id)
+        if not course:
+            return None, []
+
+        announcements = self.announcement_repo.get_by_course(course_id)
+        return course, announcements
 
     # ==================================================
     # GET ANNOUNCEMENT BY ID
