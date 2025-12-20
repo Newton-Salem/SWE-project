@@ -179,12 +179,20 @@ class AssignmentService:
     def get_assignments_by_course(self, course_id, student_id=None):
         assignments = self.assignment_repo.get_by_course(course_id)
 
-        if student_id:
-            for a in assignments:
-                submission = self.submission_repo.get_student_submission(
-                    a.assignment_id,
-                student_id
-            )
-            a.submitted = submission is not None
+        for a in assignments:
+        # قيم افتراضية
+            a.submitted = False
+            a.grade = None
+
+        # لو Student
+            if student_id:
+                submission = self.submission_repo.get_by_student_and_assignment(
+                    student_id,
+                    a.assignment_id
+                )
+            if submission:
+                a.submitted = True
+                a.grade = submission.grade
 
         return assignments
+

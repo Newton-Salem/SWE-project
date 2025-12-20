@@ -44,7 +44,7 @@ class AuthService:
         token = str(uuid.uuid4())
         expiry = datetime.now() + timedelta(minutes=30)
 
-        self.user_repo.set_reset_token(email, token, expiry)
+        self.user_repo.set_reset_token(user.user_id, token, expiry)
 
         # مؤقتًا في الكونسول
         reset_link = f"http://127.0.0.1:5000/auth/reset-password/{token}"

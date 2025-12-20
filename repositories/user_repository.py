@@ -94,3 +94,21 @@ class UserRepository(BaseRepository):
         )
 
         self.conn.commit()
+    # =========================
+    def update_name(self, user_id, new_name):
+     self.cursor.execute("""
+        UPDATE users
+        SET name = ?
+        WHERE user_id = ?
+     """, (new_name, user_id))
+     self.conn.commit()
+    
+    def update_user(self, user_id, name, email):
+     self.cursor.execute("""
+        UPDATE users
+        SET name = ?, email = ?
+        WHERE user_id = ?
+     """, (name, email, user_id))
+     self.conn.commit()
+
+    

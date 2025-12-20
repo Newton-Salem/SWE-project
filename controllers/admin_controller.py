@@ -123,3 +123,30 @@ def reset_user_password(user_id):
 
     flash("Password reset to Reset@123", "success")
     return redirect(url_for("admin.dashboard"))
+
+# =========================
+@admin_bp.route("/edit-user/<int:user_id>", methods=["GET", "POST"])
+@login_required("admin")
+def edit_user(user_id):
+    user = user_repo.get_by_id(user_id)
+    if not user:
+        flash("User not found", "danger")
+        return redirect(url_for("admin.dashboard"))
+
+    if request.method == "POST":
+        name = request.form.get("name", "").strip()
+        email = request.form.get("email", "").strip()
+
+        if not name or not email:
+            flash("Name and Email are required", "danger")
+            return redirect(request.url)
+
+        user_repo.update_user(user_id, name, email)
+        flash("User updated successfully", "success")
+        return redirect(url_for("admin.dashboard"))
+
+    return render_template(
+        "admin_edit_user.html",
+        user=user
+    )
+
