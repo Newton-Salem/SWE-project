@@ -51,19 +51,11 @@ class LectureService:
             if not file_path.lower().endswith(".pdf"):
                 return False, "Only PDF files are allowed"
 
-<<<<<<< HEAD
-        # ---------- Validate video link ----------
-        if video_link and not video_link.startswith(("http://", "https://")):
-            return False, "Invalid video link"
-
-        # ---------- Save lecture ----------
-=======
         # Validate video link 
         if video_link and not video_link.startswith(("http://", "https://")):
             return False, "Invalid video link"
 
         # Save lecture
->>>>>>> afe8f5132ed2cacb0ca1acde2f713dc889375586
         lecture_id = self.lecture_repo.add_lecture(
             course_id,
             title,
@@ -72,11 +64,7 @@ class LectureService:
             date.today()
         )
 
-<<<<<<< HEAD
-        # ---------- Notify students ----------
-=======
         #  Notify students 
->>>>>>> afe8f5132ed2cacb0ca1acde2f713dc889375586
         students = self.enrollment_repo.get_enrolled_students(course_id)
 
         for s in students:
@@ -89,14 +77,8 @@ class LectureService:
 
         return True, "Lecture uploaded successfully"
 
-<<<<<<< HEAD
-    # ==================================================
-    # ================= DELETE LECTURE =================
-    # ==================================================
-=======
     #DELETE LECTURE 
     
->>>>>>> afe8f5132ed2cacb0ca1acde2f713dc889375586
     def delete_lecture(self, lecture_id):
         lecture = self.lecture_repo.get_by_id(lecture_id)
         if not lecture:
@@ -110,14 +92,8 @@ class LectureService:
         self.lecture_repo.delete(lecture_id)
         return True, "Lecture deleted successfully"
 
-<<<<<<< HEAD
-    # ==================================================
-    # ================= EDIT LECTURE ===================
-    # ==================================================
-=======
     #EDIT LECTURE 
     
->>>>>>> afe8f5132ed2cacb0ca1acde2f713dc889375586
     def edit_lecture(self, lecture_id, title, video_link):
         lecture = self.lecture_repo.get_by_id(lecture_id)
         if not lecture:
@@ -133,28 +109,16 @@ class LectureService:
         )
         return True, "Lecture updated successfully"
 
-<<<<<<< HEAD
-    # ==================================================
-    # ================= READ METHODS ===================
-    # ==================================================
-=======
     #READ METHODS
     
->>>>>>> afe8f5132ed2cacb0ca1acde2f713dc889375586
     def get_lectures_by_course(self, course_id):
         return self.lecture_repo.get_by_course(course_id)
 
     def get_lecture_by_id(self, lecture_id):
         return self.lecture_repo.get_by_id(lecture_id)
 
-<<<<<<< HEAD
-    # ==================================================
-    # ================= FILE HANDLING ==================
-    # ==================================================
-=======
     #FILE HANDLING
     
->>>>>>> afe8f5132ed2cacb0ca1acde2f713dc889375586
     def save_uploaded_file(self, file, upload_folder):
         os.makedirs(upload_folder, exist_ok=True)
 
@@ -162,8 +126,4 @@ class LectureService:
         full_path = os.path.join(upload_folder, filename)
         file.save(full_path)
 
-<<<<<<< HEAD
         return f"uploads/{filename}"
-=======
-        return f"uploads/{filename}"
->>>>>>> afe8f5132ed2cacb0ca1acde2f713dc889375586
