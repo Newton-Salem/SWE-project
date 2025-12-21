@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}Lectures{% endblock %}
+
+{% block content %}
+<h2>Course Lectures</h2>
+
+{% if lectures %}
+    {% for lec in lectures %}
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title">{{ lec.title }}</h5>
+
+                {% if lec.file_path %}
+                    <a href="{{ url_for('static', filename=lec.file_path) }}"
+                       class="btn btn-sm btn-primary">
+                        Download PDF
+                    </a>
+                {% endif %}
+
+                {% if lec.video_link %}
+                    <a href="{{ lec.video_link }}"
+                       target="_blank"
+                       class="btn btn-sm btn-secondary">
+                        Watch Video
+                    </a>
+                {% endif %}
+
+                {% if session.role == "teacher" %}
+                    <div class="mt-2">
+                        <a href="{{ url_for('lecture.edit_lecture', lecture_id=lec.lecture_id) }}"
+                           class="btn btn-sm btn-warning">
+                            Edit
+                        </a>
+
+                        <a href="{{ url_for('lecture.delete_lecture', lecture_id=lec.lecture_id) }}"
+                           class="btn btn-sm btn-danger"
+                           onclick="return confirm('Are you sure you want to delete this lecture?')">
+                            Delete
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    {% endfor %}
+{% else %}
+    <p>No lectures available.</p>
+{% endif %}
+{% endblock %}
