@@ -82,8 +82,25 @@ jobs:
 
     - name: Test Docker image
       run: |
-        docker run -d -p 5000:5000 --name edutrack-test edutrack:latest
-        sleep 5
-        curl -f http://localhost:5000/ || exit 1
+        # Run container with DB env variables
+        docker run -d -p 5000:5000 --name edutrack-test \
+          -e DB_SERVER=host.docker.internal \
+          -e DB_NAME=EduTrack \
+          -e DB_USER=sa \
+          -e DB_PASSWORD=StrongPassword123! \
+          -e DB_DRIVER="ODBC Driver 18 for SQL Server" \
+          -e DB_ENCRYPT=no \
+          edutrack:latest
+
+        # Wait for app to start
+        for i in {1..10}; do
+          if curl -f http://localhost:5000/; then
+            echo "App is up!"
+            break
+          fi
+          echo "Waiting for app to start..."
+          sleep 3
+        done
+
         docker stop edutrack-test
         docker rm edutrack-test
