@@ -1,4 +1,3 @@
-
 from flask import Blueprint, render_template, request, session, redirect, url_for, flash
 from services.course_service import CourseService
 
@@ -105,4 +104,3 @@ def login_required(role=None):
         wrapper.__name__ = f.__name__
         return wrapper
     return decorator
-

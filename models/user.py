@@ -5,8 +5,8 @@ class User:
         self.user_id = user_id
         self.name = name
         self.email = email
-        self.password = password  # hashed later
-        self.role = role  # student, teacher, admin
+        self.password = password  
+        self.role = role  
 
     @classmethod
     def from_row(cls, cursor, row):

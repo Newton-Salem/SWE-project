@@ -13,7 +13,7 @@ def seed_data():
     db = DatabaseConnection()
     cursor = db.get_cursor()
 
-    # ================= USERS (HASHED PASSWORDS) =================
+    # USERS 
     users = [
         ('Admin User', 'admin@edu.com', generate_password_hash('admin123'), 'admin'),
         ('Dr. Ahmed', 'ahmed@edu.com', generate_password_hash('123456'), 'teacher'),
@@ -30,7 +30,7 @@ def seed_data():
             VALUES (?, ?, ?, ?)
         """, email, name, email, password, role)
 
-    # ================= GET IDS =================
+    #GET IDS 
     teacher_ahmed = get_id(cursor, "users", "email", "ahmed@edu.com")
     teacher_mona = get_id(cursor, "users", "email", "mona@edu.com")
 
@@ -38,7 +38,7 @@ def seed_data():
     student_sara = get_id(cursor, "users", "email", "sara@edu.com")
     student_omar = get_id(cursor, "users", "email", "omar@edu.com")
 
-    # ================= COURSES =================
+    #COURSES 
     courses = [
         (teacher_ahmed, 'Database Systems', 'DB101', 'Intro to Databases'),
         (teacher_mona, 'Software Engineering', 'SWE201', 'Software Dev Principles'),
@@ -54,7 +54,7 @@ def seed_data():
     course_db = get_id(cursor, "courses", "code", "DB101")
     course_swe = get_id(cursor, "courses", "code", "SWE201")
 
-    # ================= ENROLLMENT =================
+    #ENROLLMENT
     enrollments = [
         (student_ali, course_db),
         (student_sara, course_db),
@@ -72,7 +72,7 @@ def seed_data():
             VALUES (?, ?, ?)
         """, student_id, course_id, student_id, course_id, date.today())
 
-    # ================= LECTURES =================
+    #  LECTURES 
     lectures = [
         (course_db, 'Intro to DB', 'lec1.pdf'),
         (course_db, 'ER Diagrams', 'lec2.pdf'),
@@ -89,7 +89,7 @@ def seed_data():
             VALUES (?, ?, ?, ?)
         """, course_id, title, course_id, title, file_path, date.today())
 
-    # ================= ASSIGNMENTS =================
+    #  ASSIGNMENTS
     cursor.execute("""
         IF NOT EXISTS (SELECT 1 FROM assignments WHERE title = 'HW1')
         INSERT INTO assignments (course_id, title, description, due_date, max_grade)
@@ -98,7 +98,7 @@ def seed_data():
 
     assignment_hw1 = get_id(cursor, "assignments", "title", "HW1")
 
-    # ================= SUBMISSIONS =================
+    #  SUBMISSIONS
     cursor.execute("""
         IF NOT EXISTS (
             SELECT 1 FROM submissions
@@ -109,7 +109,7 @@ def seed_data():
     """, student_ali, assignment_hw1,
        assignment_hw1, student_ali, 'hw1_ali.pdf', datetime.now(), 85)
 
-    # ================= ATTENDANCE =================
+    # ATTENDANCE 
     cursor.execute("""
         IF NOT EXISTS (
             SELECT 1 FROM attendance
@@ -120,7 +120,7 @@ def seed_data():
     """, student_sara, course_db, date.today(),
        course_db, student_sara, date.today())
 
-    # ================= NOTIFICATIONS =================
+    # NOTIFICATIONS 
     cursor.execute("""
         IF NOT EXISTS (
             SELECT 1 FROM notifications
@@ -130,14 +130,14 @@ def seed_data():
         VALUES (?, 'You have been enrolled in DB101', 'enrollment', ?)
     """, student_ali, student_ali, datetime.now())
 
-    # ================= USER PREFERENCES =================
+    # USER PREFERENCES 
     cursor.execute("""
         IF NOT EXISTS (SELECT 1 FROM user_preferences WHERE user_id = ?)
         INSERT INTO user_preferences (user_id, email_notifications, theme, language)
         VALUES (?, 1, 'dark', 'en')
     """, student_ali, student_ali)
 
-    # ================= GRADE SUMMARY =================
+    # GRADE SUMMARY
     cursor.execute("""
         IF NOT EXISTS (
             SELECT 1 FROM grade_summary
@@ -154,8 +154,10 @@ def seed_data():
     
 
     db.commit()
-    print("✅ Extended sample data seeded successfully")
+    print("Extended sample data seeded successfully")
 
 
 if __name__ == "__main__":
+
     seed_data()
+

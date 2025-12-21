@@ -34,4 +34,3 @@ class EnrollmentRepository(BaseRepository):
             WHERE e.student_id = ?
         """, (student_id,))
         return self.cursor.fetchall()
-

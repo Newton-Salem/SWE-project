@@ -187,4 +187,3 @@ class AssignmentService:
                     a.grade = submission.grade
 
         return assignments
-    

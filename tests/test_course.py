@@ -76,4 +76,3 @@ def test_join_invalid_course(test_users):
     success, message = course_service.join_course(test_users["student"].user_id, "INVALID")
     assert success is False
     assert "Invalid" in message or "invalid" in message.lower()
-

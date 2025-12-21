@@ -108,5 +108,3 @@ class UserRepository(BaseRepository):
         WHERE user_id = ?
      """, (name, email, user_id))
      self.conn.commit()
-
-    

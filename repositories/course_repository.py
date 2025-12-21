@@ -1,4 +1,3 @@
-
 from repositories.base_repository import BaseRepository
 from models.course import Course
 
@@ -57,4 +56,3 @@ class CourseRepository(BaseRepository):
      self.cursor.execute("SELECT * FROM courses")
      rows = self.cursor.fetchall()
      return rows
-    

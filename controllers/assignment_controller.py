@@ -15,9 +15,9 @@ assignment_service = AssignmentService()
 submission_service = SubmissionService()
 lecture_service = LectureService()
 
-# ==================================================
-# =============== TEACHER ROUTES ===================
-# ==================================================
+
+# TEACHER ROUTES
+
 
 @assignment_bp.route("/create/<int:course_id>", methods=["GET", "POST"])
 @login_required("teacher")
@@ -108,9 +108,9 @@ def delete_assignment(assignment_id):
     return redirect(url_for("course.teacher_dashboard"))
 
 
-# ==================================================
-# =============== STUDENT ROUTES ===================
-# ==================================================
+
+# STUDENT ROUTES 
+
 
 @assignment_bp.route("/submit/<int:assignment_id>", methods=["GET", "POST"])
 @login_required("student")
@@ -165,9 +165,9 @@ def assignment_status(assignment_id):
     )
 
 
-# ==================================================
-# ============ SHARED VIEW (STUDENT + TEACHER) =====
-# ==================================================
+
+#  SHARED VIEW (STUDENT and TEACHER) 
+
 
 @assignment_bp.route("/view/<int:course_id>")
 @login_required()

@@ -21,7 +21,7 @@ def download_lecture(lecture_id):
         flash("Lecture file not found", "danger")
         return redirect(url_for("course.teacher_dashboard" if session.get("role") == "teacher" else "course.student_dashboard"))
     
-    # Check access (teacher or enrolled student)
+    # Check access 
     course = course_service.get_course_by_id(lecture.course_id)
     if not course:
         flash("Course not found", "danger")
@@ -57,8 +57,6 @@ def download_submission(submission_id):
         return redirect(url_for("course.student_dashboard"))
     
     submission_repo = RepositoryFactory.get("submission")
-    # Get submission - we need to add this method
-    # For now, return error
+
     flash("Feature not fully implemented", "warning")
     return redirect(url_for("course.teacher_dashboard"))
-

@@ -17,7 +17,7 @@ class SubmissionService:
         """Get all submissions for an assignment with student information"""
         submissions = self.submission_repo.get_by_assignment(assignment_id)
         
-        # Enrich with student names
+        #student names
         for submission in submissions:
             student = self.user_repo.get_by_id(submission.student_id)
             submission.student_name = student.name if student else "Unknown"
@@ -60,4 +60,3 @@ class SubmissionService:
             return False, "Assignment due date has passed"
         
         return True, "Can submit"
-

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>{% block title %}EduTrack{% endblock %}</title>
 
-    <!-- Bootstrap -->
+    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom CSS -->
@@ -13,12 +13,10 @@
 <body>
 
 <!-- ================= NAVBAR ================= -->
-<nav class="navbar navbar-expand-lg navbar-dark"
-     style="background-color: #4f8fe6;">   <!-- اللون القديم -->
-
+<nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #4f8fe6;">
     <div class="container-fluid">
 
-        <!-- Logo (دايمًا ظاهر) -->
+        <!-- Logo -->
         <a class="navbar-brand fw-bold"
            href="{% if session.get('user_id') %}
                     {% if session.get('role') == 'admin' %}
@@ -35,6 +33,7 @@
         </a>
 
         {% if session.get("user_id") %}
+<<<<<<< HEAD
         <div class="collapse navbar-collapse">
             <ul class="navbar-nav ms-auto align-items-center gap-3">
 
@@ -75,6 +74,39 @@
 
             </ul>
         </div>
+=======
+        <ul class="navbar-nav ms-auto d-flex flex-row align-items-center gap-3">
+
+            <!-- Dashboard -->
+            <li class="nav-item">
+                {% if session.get("role") == "admin" %}
+                    <a class="nav-link" href="{{ url_for('admin.dashboard') }}">Admin Dashboard</a>
+                {% elif session.get("role") == "teacher" %}
+                    <a class="nav-link" href="{{ url_for('course.teacher_dashboard') }}">Dashboard</a>
+                {% else %}
+                    <a class="nav-link" href="{{ url_for('course.student_dashboard') }}">Dashboard</a>
+                {% endif %}
+            </li>
+
+            <!-- Student only -->
+            {% if session.get("role") == "student" %}
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('course.join_course') }}">Join Course</a>
+            </li>
+            {% endif %}
+
+            <!-- Notifications -->
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('notification.notifications') }}">🔔 Notifications</a>
+            </li>
+
+            <!-- Logout -->
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('auth.logout') }}">Logout</a>
+            </li>
+
+        </ul>
+>>>>>>> afe8f5132ed2cacb0ca1acde2f713dc889375586
         {% endif %}
 
     </div>
@@ -98,6 +130,9 @@
 </div>
 <!-- ========================================== -->
 
+<<<<<<< HEAD
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+=======
+>>>>>>> afe8f5132ed2cacb0ca1acde2f713dc889375586
 </body>
 </html>

@@ -2,7 +2,6 @@ import pytest
 import os
 import sys
 
-# Add parent directory to path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from app import create_app
@@ -26,7 +25,7 @@ def setup_database():
     from database.create_tables import create_tables
     create_tables()
     yield
-    # Cleanup if needed
+   
 
 def test_user_registration():
     """Test user registration"""
@@ -70,4 +69,3 @@ def test_nonexistent_user():
     auth_service = AuthService()
     user = auth_service.authenticate("nonexistent@example.com", "password123")
     assert user is None
-

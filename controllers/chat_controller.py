@@ -5,7 +5,7 @@ from controllers.course_controller import login_required
 chat_bp = Blueprint("chat", __name__)
 chat_service = ChatService()
 
-# ================= STUDENT =================
+# For STUDENT 
 @chat_bp.route("/course/<int:course_id>/chat", methods=["GET", "POST"])
 @login_required("student")
 def student_chat(course_id):
@@ -14,8 +14,8 @@ def student_chat(course_id):
     if request.method == "POST":
         chat_service.send_message(
             course_id,
-            student_id,   # صاحب الشات
-            student_id,   # sender = الطالب
+            student_id,   
+            student_id,   
             request.form["message"]
         )
         return redirect(request.url)
@@ -24,7 +24,7 @@ def student_chat(course_id):
     return render_template("chat.html", messages=messages)
 
 
-# ================= TEACHER =================
+# For TEACHER 
 @chat_bp.route("/course/<int:course_id>/teacher")
 @login_required("teacher")
 def teacher_students(course_id):

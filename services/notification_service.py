@@ -5,9 +5,8 @@ class NotificationService:
     def __init__(self):
         self.notification_repo = RepositoryFactory.get("notification")
 
-    # ==================================================
     # CREATE NOTIFICATION
-    # ==================================================
+
     def create_notification(self, user_id, message, notification_type, reference_id=None):
         if not user_id:
             return False, "Invalid user"
@@ -24,18 +23,28 @@ class NotificationService:
 
         return True, "Notification created"
 
+<<<<<<< HEAD
     # ==================================================
     # GET USER NOTIFICATIONS
     # ==================================================
+=======
+    # GET USER NOTIFICATIONS
+
+>>>>>>> afe8f5132ed2cacb0ca1acde2f713dc889375586
     def get_user_notifications(self, user_id):
         if not user_id:
             return []
 
         return self.notification_repo.get_by_user(user_id)
 
+<<<<<<< HEAD
     # ==================================================
     # DELETE ALL USER NOTIFICATIONS
     # ==================================================
+=======
+    # DELETE ALL USER NOTIFICATIONS
+    
+>>>>>>> afe8f5132ed2cacb0ca1acde2f713dc889375586
     def delete_user_notifications(self, user_id):
         if not user_id:
             return False

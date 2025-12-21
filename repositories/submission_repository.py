@@ -55,4 +55,3 @@ class SubmissionRepository(BaseRepository):
     """, (assignment_id, student_id))
 
      return self.cursor.fetchone()
-

@@ -18,7 +18,7 @@ def upload_lecture(course_id):
         max_file_size = current_app.config.get("MAX_CONTENT_LENGTH", 10 * 1024 * 1024)
         
         if file and file.filename:
-            # Save file using service
+           
             file_path = lecture_service.save_uploaded_file(file, upload_folder)
 
         success, message = lecture_service.upload_lecture(
@@ -34,7 +34,7 @@ def upload_lecture(course_id):
     return render_template("lectures.html", course_id=course_id)
 
 @lecture_bp.route("/view/<int:course_id>")
-@login_required()   # أي حد logged in
+@login_required()  
 def view_lectures(course_id):
     lectures = lecture_service.get_lectures_by_course(course_id)
     return render_template(

@@ -6,7 +6,7 @@ class LectureRepository(BaseRepository):
     def __init__(self):
         super().__init__()
 
-    # ================= CREATE =================
+    #  CREATE 
     def add_lecture(self, course_id, title, file_path, video_link, upload_date):
         self.cursor.execute("""
             INSERT INTO lectures (course_id, title, file_path, video_link, upload_date)
@@ -14,7 +14,7 @@ class LectureRepository(BaseRepository):
         """, (course_id, title, file_path, video_link, upload_date))
         self.conn.commit()
 
-    # ================= READ =================
+    # READ 
     def get_by_course(self, course_id):
         self.cursor.execute("""
             SELECT * FROM lectures
@@ -31,7 +31,7 @@ class LectureRepository(BaseRepository):
         row = self.cursor.fetchone()
         return Lecture.from_row(self.cursor, row) if row else None
 
-    # ================= UPDATE =================
+    #UPDATE 
     def update(self, lecture_id, title, video_link):
         self.cursor.execute("""
             UPDATE lectures
@@ -40,7 +40,7 @@ class LectureRepository(BaseRepository):
         """, (title, video_link, lecture_id))
         self.conn.commit()
 
-    # ================= DELETE =================
+    #DELETE
     def delete(self, lecture_id):
         self.cursor.execute("""
             DELETE FROM lectures

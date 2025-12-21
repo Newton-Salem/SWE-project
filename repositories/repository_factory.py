@@ -36,5 +36,3 @@ class RepositoryFactory:
         if name == "notification":
             return NotificationRepository()
         raise ValueError(f"Unknown repository: {name}")
-
-        

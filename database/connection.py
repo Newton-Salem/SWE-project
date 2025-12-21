@@ -27,25 +27,29 @@ class DatabaseConnection:
                 return
             
             try:
-                # SQL Server connection details
-                server = os.environ.get("DB_SERVER", "host.docker.internal")  # Docker on Windows
+                # SQL Server connection string
+                # Update these values according to your SQL Server configuration
+                server = os.environ.get("DB_SERVER", "localhost")
                 database = os.environ.get("DB_NAME", "EduTrack")
-                driver = os.environ.get("DB_DRIVER", "ODBC Driver 18 for SQL Server")
-                user = os.environ.get("DB_USER", "sa")
-                password = os.environ.get("DB_PASSWORD", "StrongPassword123!")
-
-                # Check available drivers
-                available_drivers = pyodbc.drivers()
-                if driver not in available_drivers:
-                    print(f"[WARNING] Driver '{driver}' not found. Available drivers: {', '.join(available_drivers)}")
-                    sql_drivers = [d for d in available_drivers if "SQL Server" in d]
-                    if sql_drivers:
-                        driver = sql_drivers[0]
-                        print(f"[INFO] Using driver: {driver}")
-                    else:
-                        raise Exception("No SQL Server ODBC driver found. Please install an ODBC Driver for SQL Server.")
-
-                # Build connection string for SQL Authentication
+                driver = os.environ.get("DB_DRIVER", "ODBC Driver 17 for SQL Server")
+                trusted_connection = os.environ.get("DB_TRUSTED", "yes")
+                
+                
+                try:
+                    available_drivers = [d for d in pyodbc.drivers()]
+                    if driver not in available_drivers:
+                        print(f"[WARNING] Driver '{driver}' not found.")
+                        print(f"Available drivers: {', '.join(available_drivers)}")
+                    
+                        sql_drivers = [d for d in available_drivers if 'SQL Server' in d]
+                        if sql_drivers:
+                            driver = sql_drivers[0]
+                            print(f"Using driver: {driver}")
+                        else:
+                            raise Exception("No SQL Server ODBC driver found. Please install ODBC Driver for SQL Server.")
+                except Exception as driver_error:
+                    print(f"[WARNING] Error checking drivers: {driver_error}")
+                
                 connection_string = (
                     f"DRIVER={{{driver}}};"
                     f"SERVER={server};"
@@ -75,7 +79,7 @@ class DatabaseConnection:
 
     def get_connection(self):
         if self.connection is None:
-            raise Exception("Database connection is not available. Check your SQL Server configuration.")
+            raise Exception("Database connection is not available. Please check your SQL Server configuration.")
         return self.connection
 
     def get_cursor(self):
@@ -92,14 +96,13 @@ class DatabaseConnection:
                 raise
         else:
             raise Exception("Cannot commit: Database connection is not available.")
-
     def close(self):
         if self.connection:
             try:
                 self.connection.close()
             except Exception as e:
                 print(f"[WARNING] Error closing connection: {e}")
-
+    
     def is_connected(self):
         """Check if database connection is available"""
         return self.connection is not None and self.cursor is not None
