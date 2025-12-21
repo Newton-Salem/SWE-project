@@ -1,24 +1,53 @@
-from flask import Blueprint, render_template, request, redirect, url_for, session
-from DAO.chat_dao import ChatDAO
-from DAO.course_dao import CourseDAO
+from flask import Blueprint, render_template, request, redirect, session
+from services.chat_service import ChatService
+from controllers.course_controller import login_required
 
 chat_bp = Blueprint("chat", __name__)
-chat_dao = ChatDAO()
-course_dao = CourseDAO()
+chat_service = ChatService()
 
+# For STUDENT 
 @chat_bp.route("/course/<int:course_id>/chat", methods=["GET", "POST"])
-def course_chat(course_id):
-    if "user_id" not in session:
-        return redirect(url_for("auth.login"))
+@login_required("student")
+def student_chat(course_id):
+    student_id = session["user_id"]
 
     if request.method == "POST":
-        message = request.form["message"].strip()
-        if message:
-            chat_dao.add_message(course_id, session["user_id"], message)
-        return redirect(url_for("chat.course_chat", course_id=course_id))
+        chat_service.send_message(
+            course_id,
+            student_id,   
+            student_id,   
+            request.form["message"]
+        )
+        return redirect(request.url)
 
-    course = course_dao.get_course(course_id)
-    messages = chat_dao.get_messages(course_id)
-    return render_template("chat.html",
-                           course=course,
-                           messages=messages)
+    messages = chat_service.get_student_chat(course_id, student_id)
+    return render_template("chat.html", messages=messages)
+
+
+# For TEACHER 
+@chat_bp.route("/course/<int:course_id>/teacher")
+@login_required("teacher")
+def teacher_students(course_id):
+    students = chat_service.get_students_with_chats(course_id)
+    return render_template(
+        "chat_students.html",
+        students=students,
+        course_id=course_id
+    )
+
+@chat_bp.route("/course/<int:course_id>/chat/<int:student_id>", methods=["GET", "POST"])
+@login_required("teacher")
+def teacher_chat(course_id, student_id):
+    teacher_id = session["user_id"]
+
+    if request.method == "POST":
+        chat_service.send_message(
+            course_id,
+            student_id,   # الشات تابع للطالب
+            teacher_id,   # sender = المدرس
+            request.form["message"]
+        )
+        return redirect(request.url)
+
+    messages = chat_service.get_student_chat(course_id, student_id)
+    return render_template("chat.html", messages=messages)

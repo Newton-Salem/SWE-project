@@ -1,3 +1,4 @@
+from models import row_to_dict
 
 class Attendance:
     def __init__(self, attendance_id, course_id, student_id, date, status):
@@ -9,10 +10,9 @@ class Attendance:
 
     @classmethod
     def from_row(cls, cursor, row):
-        if not row:
+        data = row_to_dict(cursor, row)
+        if not data:
             return None
-        cols = [c[0] for c in cursor.description]
-        data = dict(zip(cols, row))
         return cls(
             attendance_id=data.get("attendance_id"),
             course_id=data.get("course_id"),
