@@ -1,4 +1,4 @@
-from tkinter import END
+
 from database.connection import DatabaseConnection
 
 def create_tables():
