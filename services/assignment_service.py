@@ -11,9 +11,9 @@ class AssignmentService:
         self.user_repo = RepositoryFactory.get("user")
         self.notification_service = NotificationService()
 
-    # ==================================================
+    
     # CREATE ASSIGNMENT (TEACHER)
-    # ==================================================
+   
     def create_assignment(self, course_id, title, description, due_date, max_grade):
         course = self.course_repo.get_by_id(course_id)
         if not course:
@@ -55,9 +55,9 @@ class AssignmentService:
 
         return True, "Assignment created successfully"
 
-    # ==================================================
+   
     # DELETE ASSIGNMENT (TEACHER)
-    # ==================================================
+    
     def delete_assignment(self, assignment_id, teacher_id):
         assignment = self.assignment_repo.get_by_id(assignment_id)
         if not assignment:
@@ -70,15 +70,14 @@ class AssignmentService:
         self.assignment_repo.delete(assignment_id)
         return True, "Assignment deleted successfully"
 
-    # ==================================================
+    
     # READ
-    # ==================================================
+    
     def get_assignment_by_id(self, assignment_id):
         return self.assignment_repo.get_by_id(assignment_id)
 
-    # ==================================================
-    # SUBMIT ASSIGNMENT (STUDENT)
-    # ==================================================
+    
+   
     def submit_assignment(self, assignment_id, student_id, file_path):
         assignment = self.assignment_repo.get_by_id(assignment_id)
         if not assignment:
@@ -102,9 +101,9 @@ class AssignmentService:
 
         return True, "Submitted successfully"
 
-    # ==================================================
+   
     # VIEW SUBMISSIONS (TEACHER)
-    # ==================================================
+    
     def get_submissions_by_assignment(self, assignment_id):
         submissions = self.submission_repo.get_by_assignment(assignment_id)
 
@@ -114,9 +113,9 @@ class AssignmentService:
 
         return submissions
 
-    # ==================================================
+    
     # GRADE SUBMISSION (TEACHER)
-    # ==================================================
+    
     def grade_submission(self, submission_id, teacher_id, grade, feedback=None):
         submission = self.submission_repo.get_by_id(submission_id)
         if not submission:
@@ -149,9 +148,9 @@ class AssignmentService:
 
         return True, "Submission graded successfully"
 
-    # ==================================================
+  
     # STUDENT ASSIGNMENT STATUS
-    # ==================================================
+    
     def get_student_assignment_status(self, assignment_id, student_id):
         assignment = self.assignment_repo.get_by_id(assignment_id)
         if not assignment:
@@ -167,9 +166,9 @@ class AssignmentService:
             "submission": submission
         }
 
-    # ==================================================
+   
     # ASSIGNMENTS BY COURSE (STUDENT / TEACHER)
-    # ==================================================
+    
     def get_assignments_by_course(self, course_id, student_id=None):
         assignments = self.assignment_repo.get_by_course(course_id)
 

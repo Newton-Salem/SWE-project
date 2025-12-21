@@ -1,5 +1,4 @@
 from repositories.base_repository import BaseRepository
-from models.attendance import Attendance
 
 class AttendanceRepository(BaseRepository):
     def __init__(self):
@@ -12,6 +11,22 @@ class AttendanceRepository(BaseRepository):
         """, (course_id, student_id, date, status))
         self.conn.commit()
 
+    def update_attendance(self, course_id, student_id, date, status):
+        self.cursor.execute("""
+            UPDATE attendance
+            SET status = ?
+            WHERE course_id = ? AND student_id = ? AND date = ?
+        """, (status, course_id, student_id, date))
+        self.conn.commit()
+
+    def get_attendance(self, course_id, student_id, date):
+        self.cursor.execute("""
+            SELECT *
+            FROM attendance
+            WHERE course_id = ? AND student_id = ? AND date = ?
+        """, (course_id, student_id, date))
+        return self.cursor.fetchone()
+
     def get_students_in_course(self, course_id):
         self.cursor.execute("""
             SELECT u.user_id, u.name
@@ -19,6 +34,13 @@ class AttendanceRepository(BaseRepository):
             JOIN enrollment e ON u.user_id = e.student_id
             WHERE e.course_id = ?
         """, (course_id,))
-        rows = self.cursor.fetchall()
-        cols = [c[0] for c in self.cursor.description]
-        return [dict(zip(cols, r)) for r in rows]
+        return self.cursor.fetchall()
+
+    def get_student_attendance(self, course_id, student_id):
+        self.cursor.execute("""
+            SELECT date, status
+            FROM attendance
+            WHERE course_id = ? AND student_id = ?
+            ORDER BY date
+        """, (course_id, student_id))
+        return self.cursor.fetchall()

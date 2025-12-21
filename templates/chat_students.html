@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Student Chats{% endblock %}
+
+{% block content %}
+<h2>Students Chats</h2>
+
+{% if students %}
+<ul class="list-group">
+    {% for s in students %}
+    <li class="list-group-item d-flex justify-content-between align-items-center">
+        {{ s.name }}
+        <a href="{{ url_for('chat.teacher_chat',
+                            course_id=course_id,
+                            student_id=s.user_id) }}"
+           class="btn btn-sm btn-primary">
+            Open Chat
+        </a>
+    </li>
+    {% endfor %}
+</ul>
+{% else %}
+<p>No students have sent messages yet.</p>
+{% endif %}
+
+<a href="{{ url_for('course.teacher_dashboard') }}"
+   class="btn btn-primary mt-3">
+   Back
+</a>
+{% endblock %}

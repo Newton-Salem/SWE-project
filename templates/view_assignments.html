@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}Assignments{% endblock %}
+
+{% block content %}
+<h2>Assignments</h2>
+
+{% if assignments %}
+<div class="course-list">
+    {% for assignment in assignments %}
+    <div class="course-card">
+        <h3>{{ assignment.title }}</h3>
+
+        {% if assignment.description %}
+        <p style="color:#666">{{ assignment.description }}</p>
+        {% endif %}
+
+        <p><strong>Due:</strong> {{ assignment.due_date }}</p>
+        <p><strong>Max Grade:</strong> {{ assignment.max_grade }}</p>
+
+        {% if role == "student" %}
+            {% if assignment.submitted %}
+                <p class="text-success"><strong>Status:</strong> Submitted</p>
+
+                {% if assignment.grade is not none %}
+                    <p class="text-primary">
+                        <strong>Grade:</strong>
+                        {{ assignment.grade }} / {{ assignment.max_grade }}
+                    </p>
+                {% else %}
+                    <p class="text-warning">Not graded yet</p>
+                {% endif %}
+
+                <a href="{{ url_for('assignment.assignment_status', assignment_id=assignment.assignment_id) }}"
+                   class="btn btn-sm btn-secondary">
+                   View Submission
+                </a>
+            {% else %}
+                <p class="text-danger"><strong>Status:</strong> Not Submitted</p>
+                <a href="{{ url_for('assignment.submit_assignment', assignment_id=assignment.assignment_id) }}"
+                   class="btn btn-sm btn-primary">
+                   Submit
+                </a>
+            {% endif %}
+        {% endif %}
+
+        {% if role == "teacher" %}
+            <a href="{{ url_for('assignment.view_submissions', assignment_id=assignment.assignment_id) }}"
+               class="btn btn-sm btn-primary">
+               View Submissions
+            </a>
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<p>No assignments yet.</p>
+{% endif %}
+{% endblock %}
