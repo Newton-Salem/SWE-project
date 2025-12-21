@@ -82,7 +82,13 @@ jobs:
 
     - name: Test Docker image
       run: |
-        # Run container with DB env variables
+        # Start SQL Server container for app
+        docker run -d -e "ACCEPT_EULA=Y" -e "SA_PASSWORD=StrongPassword123!" \
+          -p 1433:1433 --name sqlserver-test mcr.microsoft.com/mssql/server:2019-latest
+        echo "Waiting 20s for SQL Server to start..."
+        sleep 20
+
+        # Run app container with DB env variables
         docker run -d -p 5000:5000 --name edutrack-test \
           -e DB_SERVER=host.docker.internal \
           -e DB_NAME=EduTrack \
@@ -92,8 +98,8 @@ jobs:
           -e DB_ENCRYPT=no \
           edutrack:latest
 
-        # Wait for app to start
-        for i in {1..10}; do
+        # Retry loop to wait for app to start
+        for i in {1..15}; do
           if curl -f http://localhost:5000/; then
             echo "App is up!"
             break
@@ -102,5 +108,8 @@ jobs:
           sleep 3
         done
 
-        docker stop edutrack-test
-        docker rm edutrack-test
+        # Show logs if app failed
+        docker logs edutrack-test || true
+
+        docker stop edutrack-test sqlserver-test
+        docker rm edutrack-test sqlserver-test
