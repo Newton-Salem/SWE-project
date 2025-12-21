@@ -7,6 +7,7 @@ except ImportError:
     PYODBC_AVAILABLE = False
     print("[WARNING] pyodbc not installed. Install it with: pip install pyodbc")
 
+
 class DatabaseConnection:
     """Singleton pattern for database connection - SQL Server"""
     _instance = None
@@ -25,40 +26,39 @@ class DatabaseConnection:
                 self.cursor = None
                 DatabaseConnection._initialized = True
                 return
-            
+
             try:
-                # SQL Server connection string
-                # Update these values according to your SQL Server configuration
+                # Read configuration from environment variables with defaults
                 server = os.environ.get("DB_SERVER", "localhost")
                 database = os.environ.get("DB_NAME", "EduTrack")
-                driver = os.environ.get("DB_DRIVER", "ODBC Driver 17 for SQL Server")
-                trusted_connection = os.environ.get("DB_TRUSTED", "yes")
-                
-                
+                driver = os.environ.get("DB_DRIVER", "ODBC Driver 18 for SQL Server")
+                user = os.environ.get("DB_USER", "sa")
+                password = os.environ.get("DB_PASSWORD", "StrongPassword123!")
+                encrypt = os.environ.get("DB_ENCRYPT", "no")
+
+                # Check available drivers
                 try:
-                    available_drivers = [d for d in pyodbc.drivers()]
+                    available_drivers = pyodbc.drivers()
                     if driver not in available_drivers:
                         print(f"[WARNING] Driver '{driver}' not found.")
-                        print(f"Available drivers: {', '.join(available_drivers)}")
-                    
                         sql_drivers = [d for d in available_drivers if 'SQL Server' in d]
                         if sql_drivers:
                             driver = sql_drivers[0]
-                            print(f"Using driver: {driver}")
+                            print(f"Using available driver: {driver}")
                         else:
-                            raise Exception("No SQL Server ODBC driver found. Please install ODBC Driver for SQL Server.")
+                            raise Exception("No SQL Server ODBC driver found. Please install it.")
                 except Exception as driver_error:
                     print(f"[WARNING] Error checking drivers: {driver_error}")
-                
+
+                # Correct connection string
                 connection_string = (
                     f"DRIVER={{{driver}}};"
                     f"SERVER={server};"
                     f"DATABASE={database};"
                     f"UID={user};"
                     f"PWD={password};"
-                    "Encrypt=no;"  
+                    f"Encrypt={encrypt};"
                 )
-
 
                 print(f"Attempting to connect to SQL Server: {server}/{database}")
                 self.connection = pyodbc.connect(connection_string, timeout=10)
@@ -69,7 +69,7 @@ class DatabaseConnection:
             except Exception as e:
                 print(f"[ERROR] Could not connect to SQL Server: {type(e).__name__}: {e}")
                 print("Check that:")
-                print("  1. SQL Server is running and reachable from Docker")
+                print("  1. SQL Server is running and reachable")
                 print("  2. SQL Authentication user/password are correct")
                 print("  3. Database exists")
                 print("  4. ODBC Driver is installed")
@@ -96,13 +96,14 @@ class DatabaseConnection:
                 raise
         else:
             raise Exception("Cannot commit: Database connection is not available.")
+
     def close(self):
         if self.connection:
             try:
                 self.connection.close()
             except Exception as e:
                 print(f"[WARNING] Error closing connection: {e}")
-    
+
     def is_connected(self):
         """Check if database connection is available"""
         return self.connection is not None and self.cursor is not None
