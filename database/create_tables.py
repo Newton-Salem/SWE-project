@@ -224,7 +224,6 @@
 # if __name__ == "__main__":
 #     create_tables()
 
-from tkinter import END
 from database.connection import DatabaseConnection
 
 def create_tables():
@@ -429,6 +428,7 @@ def create_tables():
             )
         END
     """)
+
     # ================= ANNOUNCEMENTS =================
     cursor.execute("""
         IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'announcements')
@@ -451,3 +451,4 @@ def create_tables():
 
 if __name__ == "__main__":
     create_tables()
+

@@ -6,9 +6,9 @@ class UserRepository(BaseRepository):
     def __init__(self):
         super().__init__()
 
-    # =========================
+
     # GET METHODS
-    # =========================
+    
     def get_by_email(self, email):
         self.cursor.execute(
             "SELECT * FROM users WHERE email = ?",
@@ -30,9 +30,9 @@ class UserRepository(BaseRepository):
         rows = self.cursor.fetchall()
         return [User.from_row(self.cursor, row) for row in rows]
 
-    # =========================
+    
     # CREATE
-    # =========================
+   
     def create_user(self, name, email, password_hash, role):
         self.cursor.execute("""
             INSERT INTO users (name, email, password, role)
@@ -40,9 +40,9 @@ class UserRepository(BaseRepository):
         """, (name, email, password_hash, role))
         self.conn.commit()
 
-    # =========================
-    # 🔐 FORGOT PASSWORD
-    # =========================
+
+    #  FORGOT PASSWORD
+   
     def set_reset_token(self, user_id, token, expiry):
         self.cursor.execute("""
             UPDATE users
@@ -69,32 +69,30 @@ class UserRepository(BaseRepository):
         """, (hashed_password, user_id))
         self.conn.commit()
 
-    # =========================
-    # ❌ DELETE USER (FIXED)
-    # =========================
+    
+    #  DELETE USER 
+   
     def delete(self, user_id):
         """
         Delete user safely by removing dependent records first
         """
 
-        # 1️⃣ delete notifications
+        
         self.cursor.execute(
             "DELETE FROM notifications WHERE user_id = ?",
             (user_id,)
         )
 
-        # (لو عندك جداول تانية مربوطة باليوزر
-        # زي submissions / enrollments
-        # ضيفي DELETE هنا بنفس الشكل)
+       
 
-        # 2️⃣ delete user
+       
         self.cursor.execute(
             "DELETE FROM users WHERE user_id = ?",
             (user_id,)
         )
 
         self.conn.commit()
-    # =========================
+
     def update_name(self, user_id, new_name):
      self.cursor.execute("""
         UPDATE users

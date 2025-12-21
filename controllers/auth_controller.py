@@ -4,9 +4,9 @@ from services.auth_service import AuthService
 auth_bp = Blueprint("auth", __name__)
 auth_service = AuthService()
 
-# =========================
+
 # REGISTER
-# =========================
+
 @auth_bp.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
@@ -14,7 +14,7 @@ def register():
         email = request.form["email"]
         password = request.form["password"]
 
-        role = "student"   # ⛔ ثابت
+        role = "student"   
 
         ok, msg = auth_service.register_user(name, email, password, role)
         flash(msg, "success" if ok else "danger")
@@ -25,9 +25,8 @@ def register():
 
 
 
-# =========================
 # LOGIN
-# =========================
+
 @auth_bp.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
@@ -53,9 +52,9 @@ def login():
     return render_template("auth/login.html")
 
 
-# =========================
+
 # FORGOT PASSWORD
-# =========================
+
 @auth_bp.route("/forgot-password", methods=["GET", "POST"])
 def forgot_password():
     if request.method == "POST":
@@ -66,9 +65,9 @@ def forgot_password():
     return render_template("auth/forgot_password.html")
 
 
-# =========================
+
 # RESET PASSWORD
-# =========================
+
 @auth_bp.route("/reset-password/<token>", methods=["GET", "POST"])
 def reset_password(token):
     if request.method == "POST":
@@ -81,9 +80,9 @@ def reset_password(token):
     return render_template("auth/reset_password.html")
 
 
-# =========================
+
 # LOGOUT
-# =========================
+
 @auth_bp.route("/logout")
 def logout():
     session.clear()

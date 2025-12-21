@@ -40,7 +40,7 @@ class AttendanceRepository(BaseRepository):
         """, (course_id,))
         return self.cursor.fetchall()
 
-    # ---------- ✅ STUDENT ATTENDANCE ----------
+    # ---------- STUDENT ATTENDANCE ----------
     def get_student_attendance(self, course_id, student_id):
         self.cursor.execute("""
             SELECT date, status

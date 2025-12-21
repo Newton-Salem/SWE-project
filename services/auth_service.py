@@ -8,9 +8,8 @@ class AuthService:
     def __init__(self):
         self.user_repo = RepositoryFactory.get("user")
 
-    # =========================
     # REGISTER
-    # =========================
+    
     def register_user(self, name, email, password, role):
         existing = self.user_repo.get_by_email(email)
         if existing:
@@ -20,9 +19,8 @@ class AuthService:
         self.user_repo.create_user(name, email, hashed, role)
         return True, "Registered successfully"
 
-    # =========================
-    # LOGIN  ✅ دي كانت المشكلة
-    # =========================
+
+    # LOGIN  
     def authenticate(self, email, password):
         user = self.user_repo.get_by_email(email)
         if not user:
@@ -33,9 +31,8 @@ class AuthService:
 
         return user
 
-    # =========================
     # FORGOT PASSWORD
-    # =========================
+    
     def forgot_password(self, email):
         user = self.user_repo.get_by_email(email)
         if not user:
@@ -46,15 +43,15 @@ class AuthService:
 
         self.user_repo.set_reset_token(user.user_id, token, expiry)
 
-        # مؤقتًا في الكونسول
+       
         reset_link = f"http://127.0.0.1:5000/auth/reset-password/{token}"
         print("RESET PASSWORD LINK:", reset_link)
 
         return True, "Reset link sent (check console)"
 
-    # =========================
+    
     # RESET PASSWORD
-    # =========================
+    
     def reset_password(self, token, new_password):
         user = self.user_repo.get_by_reset_token(token)
         if not user:
