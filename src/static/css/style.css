@@ -514,4 +514,15 @@ textarea.form-control {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
+.role-badge {
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    color: white;
+    font-size: 0.875rem;
+}
+
+/* حسب الدور */
+.role-badge.admin { background-color: var(--danger-color); }
+.role-badge.teacher { background-color: var(--primary-color); }
+.role-badge.student { background-color: var(--secondary-color); }
 
