@@ -70,4 +70,3 @@ def test_nonexistent_user():
     auth_service = AuthService()
     user = auth_service.authenticate("nonexistent@example.com", "password123")
     assert user is None
-

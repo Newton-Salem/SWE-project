@@ -10,9 +10,10 @@ class AnnouncementService:
         self.enrollment_repo = EnrollmentRepository()
         self.notification_service = NotificationService()
 
-    # ==================================================
+
     # CREATE ANNOUNCEMENT
-    # ==================================================
+
+
     def create_announcement(self, course_id, teacher_id, title, content):
         course = self.course_repo.get_by_id(course_id)
         if not course:
@@ -50,18 +51,17 @@ class AnnouncementService:
 
         return True, "Announcement created successfully"
 
-    # ==================================================
     # GET COURSE FOR TEACHER (AUTH CHECK)
-    # ==================================================
+
+
     def get_course_for_teacher(self, course_id, teacher_id):
         course = self.course_repo.get_by_id(course_id)
         if not course or course.teacher_id != teacher_id:
             return None
         return course
 
-    # ==================================================
     # GET COURSE + ANNOUNCEMENTS
-    # ==================================================
+
     def get_course_announcements(self, course_id):
         course = self.course_repo.get_by_id(course_id)
         if not course:
@@ -70,8 +70,7 @@ class AnnouncementService:
         announcements = self.announcement_repo.get_by_course(course_id)
         return course, announcements
 
-    # ==================================================
     # GET ANNOUNCEMENT BY ID
-    # ==================================================
+
     def get_announcement_by_id(self, announcement_id):
         return self.announcement_repo.get_by_id(announcement_id)
