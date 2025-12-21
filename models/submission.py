@@ -1,3 +1,5 @@
+from models import row_to_dict
+
 class Submission:
     def __init__(self, submission_id, assignment_id, student_id, file_path, timestamp, grade, feedback):
         self.submission_id = submission_id
@@ -10,10 +12,9 @@ class Submission:
 
     @classmethod
     def from_row(cls, cursor, row):
-        if not row:
+        data = row_to_dict(cursor, row)
+        if not data:
             return None
-        cols = [c[0] for c in cursor.description]
-        data = dict(zip(cols, row))
         return cls(
             submission_id=data.get("submission_id"),
             assignment_id=data.get("assignment_id"),
