@@ -10,7 +10,9 @@ class AnnouncementService:
         self.enrollment_repo = EnrollmentRepository()
         self.notification_service = NotificationService()
 
+
     # CREATE ANNOUNCEMENT
+
 
     def create_announcement(self, course_id, teacher_id, title, content):
         course = self.course_repo.get_by_id(course_id)
@@ -50,6 +52,7 @@ class AnnouncementService:
         return True, "Announcement created successfully"
 
     # GET COURSE FOR TEACHER (AUTH CHECK)
+
 
     def get_course_for_teacher(self, course_id, teacher_id):
         course = self.course_repo.get_by_id(course_id)

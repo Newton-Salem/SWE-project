@@ -65,4 +65,6 @@ def view_announcements(course_id):
         "announcements.html",
         course=course,
         announcements=announcements
+
     )
+
