@@ -1,19 +1,59 @@
 {% extends "base.html" %}
+
+{% block title %}Submissions - {{ assignment.title }} - EduTrack{% endblock %}
+
 {% block content %}
-<h2>Submissions</h2>
-<ul>
-  {% for s in submissions %}
-    <li>
-      {{ s.student_name }} - {{ s.timestamp }} -
-      {% if s.file_path %}
-        <a href="/{{ s.file_path }}">Download</a>
-      {% endif %}
-      {% if s.grade %}
-        | Grade: {{ s.grade }} ({{ s.feedback }})
-      {% else %}
-        | <a href="{{ url_for('assignment.grade_submission', submission_id=s.submission_id) }}">Grade</a>
-      {% endif %}
-    </li>
-  {% endfor %}
-</ul>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Submissions - {{ assignment.title }}</h2>
+    <a href="{{ url_for('course.teacher_dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
+</div>
+
+{% if submissions %}
+<div class="card">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Student</th>
+                <th>Submitted</th>
+                <th>Grade</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for submission in submissions %}
+            <tr>
+                <td><strong>{{ submission.student_name }}</strong></td>
+                <td>{{ submission.timestamp }}</td>
+                <td>
+                    {% if submission.grade is not none %}
+                        <strong>{{ submission.grade }}/{{ assignment.max_grade }}</strong>
+                        {% if submission.feedback %}
+                        <br><small style="color: #666;">{{ submission.feedback[:50] }}{% if submission.feedback|length > 50 %}...{% endif %}</small>
+                        {% endif %}
+                    {% else %}
+                        <span style="color: #f39c12;">Not Graded</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <div class="d-flex gap-1">
+                        {% if submission.file_path %}
+                        <a href="/{{ submission.file_path }}" class="btn btn-sm btn-secondary" download>Download</a>
+                        {% endif %}
+                        {% if submission.grade is none %}
+                        <a href="{{ url_for('assignment.grade_submission', submission_id=submission.submission_id) }}" class="btn btn-sm btn-primary">Grade</a>
+                        {% else %}
+                        <a href="{{ url_for('assignment.grade_submission', submission_id=submission.submission_id) }}" class="btn btn-sm btn-secondary">Edit Grade</a>
+                        {% endif %}
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="card">
+    <p class="text-center" style="color: #666; padding: 2rem;">No submissions yet for this assignment.</p>
+</div>
+{% endif %}
 {% endblock %}
