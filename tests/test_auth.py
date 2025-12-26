@@ -21,11 +21,33 @@ def client(app):
 
 @pytest.fixture(autouse=True)
 def setup_database():
-    """Set up database before each test"""
+    from database.connection import DatabaseConnection
     from database.create_tables import create_tables
+
+    db = DatabaseConnection()
+    cursor = db.get_cursor()
+
+    # امسح الداتا (ترتيب مهم بسبب Foreign Keys)
+    cursor.execute("DELETE FROM chat_messages")
+    cursor.execute("DELETE FROM notifications")
+    cursor.execute("DELETE FROM submissions")
+    cursor.execute("DELETE FROM attendance")
+    cursor.execute("DELETE FROM grade_summary")
+    cursor.execute("DELETE FROM user_preferences")
+    cursor.execute("DELETE FROM announcements")
+    cursor.execute("DELETE FROM enrollment")
+    cursor.execute("DELETE FROM assignments")
+    cursor.execute("DELETE FROM lectures")
+    cursor.execute("DELETE FROM courses")
+    cursor.execute("DELETE FROM users")
+
+    db.commit()
+
+    # تأكد إن الجداول موجودة
     create_tables()
+
     yield
-   
+
 
 def test_user_registration():
     """Test user registration"""
