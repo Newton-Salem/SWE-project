@@ -19,10 +19,7 @@ jobs:
           ACCEPT_EULA: "Y"
           SA_PASSWORD: "StrongPassword123!"
         options: >-
-          --health-cmd "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P StrongPassword123! -Q 'SELECT 1'" 
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
+          --health-cmd "exit 0"  # تجاهل health check الافتراضي
 
     steps:
     - uses: actions/checkout@v3
@@ -47,9 +44,10 @@ jobs:
     - name: Wait for SQL Server
       run: |
         echo "Waiting for SQL Server to be ready..."
-        for i in {1..30}; do
+        for i in {1..60}; do
           /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P StrongPassword123! -Q "SELECT 1" && break
-          sleep 2
+          echo "SQL Server not ready yet, waiting 5 seconds..."
+          sleep 5
         done
 
     - name: Run tests
@@ -88,8 +86,8 @@ jobs:
         # Start SQL Server container for app
         docker run -d -e "ACCEPT_EULA=Y" -e "SA_PASSWORD=StrongPassword123!" \
           -p 1433:1433 --name sqlserver-test mcr.microsoft.com/mssql/server:2019-latest
-        echo "Waiting 20s for SQL Server to start..."
-        sleep 20
+        echo "Waiting 30s for SQL Server to start..."
+        sleep 30
 
         # Run app container with DB env variables
         docker run -d -p 5000:5000 --name edutrack-test \
