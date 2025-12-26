@@ -19,7 +19,7 @@ jobs:
           ACCEPT_EULA: "Y"
           SA_PASSWORD: "StrongPassword123!"
         options: >-
-          --health-cmd "exit 0"  # تجاهل health check الافتراضي
+          --health-cmd "exit 0"
 
     steps:
     - uses: actions/checkout@v3
