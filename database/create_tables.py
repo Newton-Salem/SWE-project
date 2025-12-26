@@ -1,11 +1,11 @@
-from tkinter import END
+
 from database.connection import DatabaseConnection
 
 def create_tables():
     db = DatabaseConnection()
     cursor = db.get_cursor()
 
-    #  USERS 
+     #  USERS 
     cursor.execute("""
         IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'users')
         BEGIN
@@ -14,7 +14,9 @@ def create_tables():
                 name NVARCHAR(100) NOT NULL,
                 email NVARCHAR(100) UNIQUE NOT NULL,
                 password NVARCHAR(255) NOT NULL,
-                role NVARCHAR(20) CHECK (role IN ('student','teacher','admin')) NOT NULL
+                role NVARCHAR(20) CHECK (role IN ('student','teacher','admin')) NOT NULL,
+                reset_token NVARCHAR(255) NULL,
+                reset_token_expiry DATETIME NULL
             )
         END
     """)

@@ -1,5 +1,3 @@
-# services/course_service.py
-from turtle import title
 from models import course
 from repositories.repository_factory import RepositoryFactory
 from repositories.enrollment_repository import EnrollmentRepository

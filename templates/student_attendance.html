@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}My Attendance{% endblock %}
+
+{% block content %}
+<h2>My Attendance</h2>
+
+{% if records %}
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for r in records %}
+        <tr>
+            <td>{{ r.date }}</td>
+            <td>
+                {% if r.status == "Present" %}
+                    <span class="text-success">Present</span>
+                {% elif r.status == "Absent" %}
+                    <span class="text-danger">Absent</span>
+                {% else %}
+                    <span class="text-warning">Excused</span>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>No attendance records yet.</p>
+{% endif %}
+
+<a href="{{ url_for('course.student_dashboard') }}" class="btn btn-primary">
+    Back
+</a>
+{% endblock %}

@@ -1,23 +1,74 @@
-<!doctype html>
-<html>
-<body>
-  <h2>Create Assignment (Course {{ course_id }})</h2>
-  <form method="post">
-    <label>Title</label><br>
-    <input type="text" name="title" required><br>
-    <label>Description</label><br>
-    <textarea name="description"></textarea><br>
-    <label>Due Date (YYYY-MM-DD)</label><br>
-    <input type="text" name="due_date" required><br>
-    <label>Max Grade</label><br>
-    <input type="number" name="max_grade" required><br>
-    <button type="submit">Create</button>
-  </form>
+{% extends "base.html" %}
 
-  {% with messages = get_flashed_messages(with_categories=true) %}
-    {% for cat,msg in messages %}
-      <p>{{ msg }}</p>
-    {% endfor %}
-  {% endwith %}
-</body>
-</html>
+{% block title %}Assignments{% if course_id %} - Create Assignment{% endif %} - EduTrack{% endblock %}
+
+{% block content %}
+{% if course_id %}
+<div style="max-width: 600px; margin: 2rem auto;">
+    <div class="card">
+        <div class="card-header">
+            <h2 class="card-title">Create Assignment</h2>
+        </div>
+        <form method="post" style="padding: 1rem;">
+            <div class="form-group">
+                <label class="form-label" for="title">Assignment Title</label>
+                <input type="text" class="form-control" id="title" name="title" required placeholder="Enter assignment title">
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="description">Description</label>
+                <textarea class="form-control" id="description" name="description" rows="4" placeholder="Enter assignment description"></textarea>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="due_date">Due Date</label>
+                <input type="date" class="form-control" id="due_date" name="due_date" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="max_grade">Maximum Grade</label>
+                <input type="number" class="form-control" id="max_grade" name="max_grade" required min="1" placeholder="Enter maximum grade">
+            </div>
+            {% if error %}
+            <div class="alert alert-danger">{{ error }}</div>
+            {% endif %}
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Create Assignment</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% else %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Assignments - {{ course.title }}</h2>
+</div>
+
+{% if assignments %}
+<div class="card">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Due Date</th>
+                <th>Max Grade</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for assignment in assignments %}
+            <tr>
+                <td><strong>{{ assignment.title }}</strong></td>
+                <td>{{ assignment.due_date }}</td>
+                <td>{{ assignment.max_grade }}</td>
+                <td>
+                    <a href="{{ url_for('assignment.view_submissions', assignment_id=assignment.assignment_id) }}" class="btn btn-sm btn-primary">View Submissions</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="card">
+    <p class="text-center" style="color: #666; padding: 2rem;">No assignments yet.</p>
+</div>
+{% endif %}
+{% endif %}
+{% endblock %}

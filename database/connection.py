@@ -7,6 +7,7 @@ except ImportError:
     PYODBC_AVAILABLE = False
     print("[WARNING] pyodbc not installed. Install it with: pip install pyodbc")
 
+
 class DatabaseConnection:
     """Singleton pattern for database connection - SQL Server"""
     _instance = None
@@ -25,73 +26,53 @@ class DatabaseConnection:
                 self.cursor = None
                 DatabaseConnection._initialized = True
                 return
-            
+
             try:
-                # SQL Server connection string
-                # Update these values according to your SQL Server configuration
+                # Read configuration from environment variables with defaults
                 server = os.environ.get("DB_SERVER", "localhost")
                 database = os.environ.get("DB_NAME", "EduTrack")
-                driver = os.environ.get("DB_DRIVER", "ODBC Driver 17 for SQL Server")
-                trusted_connection = os.environ.get("DB_TRUSTED", "yes")
-                
-                
+                driver = os.environ.get("DB_DRIVER", "ODBC Driver 18 for SQL Server")
+                user = os.environ.get("DB_USER", "sa")
+                password = os.environ.get("DB_PASSWORD", "StrongPassword123!")
+                encrypt = os.environ.get("DB_ENCRYPT", "no")
+
+                # Check available drivers
                 try:
-                    available_drivers = [d for d in pyodbc.drivers()]
+                    available_drivers = pyodbc.drivers()
                     if driver not in available_drivers:
                         print(f"[WARNING] Driver '{driver}' not found.")
-                        print(f"Available drivers: {', '.join(available_drivers)}")
-                    
                         sql_drivers = [d for d in available_drivers if 'SQL Server' in d]
                         if sql_drivers:
                             driver = sql_drivers[0]
-                            print(f"Using driver: {driver}")
+                            print(f"Using available driver: {driver}")
                         else:
-                            raise Exception("No SQL Server ODBC driver found. Please install ODBC Driver for SQL Server.")
+                            raise Exception("No SQL Server ODBC driver found. Please install it.")
                 except Exception as driver_error:
                     print(f"[WARNING] Error checking drivers: {driver_error}")
-                
+
+                # Correct connection string
                 connection_string = (
                     f"DRIVER={{{driver}}};"
                     f"SERVER={server};"
                     f"DATABASE={database};"
-                    f"Trusted_Connection={trusted_connection};"
+                    f"UID={user};"
+                    f"PWD={password};"
+                    f"Encrypt={encrypt};"
                 )
-                
+
                 print(f"Attempting to connect to SQL Server: {server}/{database}")
                 self.connection = pyodbc.connect(connection_string, timeout=10)
                 self.cursor = self.connection.cursor()
                 print("[OK] Connected to SQL Server successfully")
                 DatabaseConnection._initialized = True
-            except pyodbc.InterfaceError as e:
-                print(f"[ERROR] Interface Error: {e}")
-                print("This usually means the ODBC driver is not installed or not found.")
-                print("Please install 'ODBC Driver 17 for SQL Server' from Microsoft.")
-                self.connection = None
-                self.cursor = None
-                DatabaseConnection._initialized = True
-            except pyodbc.OperationalError as e:
-                print(f"[ERROR] Operational Error: {e}")
-                print("This usually means:")
-                print("  - SQL Server is not running")
-                print("  - Server name is incorrect")
-                print("  - Database does not exist")
-                print("  - Network connectivity issues")
-                self.connection = None
-                self.cursor = None
-                DatabaseConnection._initialized = True
-            except pyodbc.ProgrammingError as e:
-                print(f"[ERROR] Programming Error: {e}")
-                print("This usually means the connection string is malformed.")
-                self.connection = None
-                self.cursor = None
-                DatabaseConnection._initialized = True
+
             except Exception as e:
-                print(f"[ERROR] Error connecting to SQL Server: {type(e).__name__}: {e}")
-                print("Please ensure:")
-                print("  1. SQL Server is running")
-                print("  2. ODBC Driver is installed")
-                print("  3. Database 'EduTrack' exists")
-                print("  4. Connection string is correct")
+                print(f"[ERROR] Could not connect to SQL Server: {type(e).__name__}: {e}")
+                print("Check that:")
+                print("  1. SQL Server is running and reachable")
+                print("  2. SQL Authentication user/password are correct")
+                print("  3. Database exists")
+                print("  4. ODBC Driver is installed")
                 self.connection = None
                 self.cursor = None
                 DatabaseConnection._initialized = True
@@ -103,9 +84,9 @@ class DatabaseConnection:
 
     def get_cursor(self):
         if self.cursor is None:
-            raise Exception("Database cursor is not available. Please check your SQL Server configuration.")
+            raise Exception("Database cursor is not available. Check your SQL Server configuration.")
         return self.cursor
-    
+
     def commit(self):
         if self.connection:
             try:
@@ -115,14 +96,14 @@ class DatabaseConnection:
                 raise
         else:
             raise Exception("Cannot commit: Database connection is not available.")
-    
+
     def close(self):
         if self.connection:
             try:
                 self.connection.close()
             except Exception as e:
                 print(f"[WARNING] Error closing connection: {e}")
-    
+
     def is_connected(self):
         """Check if database connection is available"""
         return self.connection is not None and self.cursor is not None
