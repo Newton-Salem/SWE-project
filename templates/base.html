@@ -33,7 +33,6 @@
         </a>
 
         {% if session.get("user_id") %}
-<<<<<<< HEAD
         <div class="collapse navbar-collapse">
             <ul class="navbar-nav ms-auto align-items-center gap-3">
 
@@ -74,39 +73,6 @@
 
             </ul>
         </div>
-=======
-        <ul class="navbar-nav ms-auto d-flex flex-row align-items-center gap-3">
-
-            <!-- Dashboard -->
-            <li class="nav-item">
-                {% if session.get("role") == "admin" %}
-                    <a class="nav-link" href="{{ url_for('admin.dashboard') }}">Admin Dashboard</a>
-                {% elif session.get("role") == "teacher" %}
-                    <a class="nav-link" href="{{ url_for('course.teacher_dashboard') }}">Dashboard</a>
-                {% else %}
-                    <a class="nav-link" href="{{ url_for('course.student_dashboard') }}">Dashboard</a>
-                {% endif %}
-            </li>
-
-            <!-- Student only -->
-            {% if session.get("role") == "student" %}
-            <li class="nav-item">
-                <a class="nav-link" href="{{ url_for('course.join_course') }}">Join Course</a>
-            </li>
-            {% endif %}
-
-            <!-- Notifications -->
-            <li class="nav-item">
-                <a class="nav-link" href="{{ url_for('notification.notifications') }}">🔔 Notifications</a>
-            </li>
-
-            <!-- Logout -->
-            <li class="nav-item">
-                <a class="nav-link" href="{{ url_for('auth.logout') }}">Logout</a>
-            </li>
-
-        </ul>
->>>>>>> afe8f5132ed2cacb0ca1acde2f713dc889375586
         {% endif %}
 
     </div>

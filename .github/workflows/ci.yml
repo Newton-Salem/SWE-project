@@ -19,7 +19,7 @@ jobs:
           ACCEPT_EULA: "Y"
           SA_PASSWORD: "StrongPassword123!"
         options: >-
-          --health-cmd "exit 0"
+          --health-cmd "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P StrongPassword123! -Q 'SELECT 1'" 
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
@@ -34,6 +34,12 @@ jobs:
 
     - name: Install dependencies
       run: |
+        sudo apt-get update
+        sudo apt-get install -y curl apt-transport-https gnupg
+        curl https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
+        curl https://packages.microsoft.com/config/ubuntu/22.04/prod.list | sudo tee /etc/apt/sources.list.d/mssql-release.list
+        sudo apt-get update
+        sudo ACCEPT_EULA=Y apt-get install -y msodbcsql18 unixodbc-dev
         python -m pip install --upgrade pip
         pip install -r requirements.txt
         pip install pytest pytest-cov pyodbc
@@ -42,10 +48,7 @@ jobs:
       run: |
         echo "Waiting for SQL Server to be ready..."
         for i in {1..30}; do
-          if /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P StrongPassword123! -Q "SELECT 1" &> /dev/null; then
-            echo "SQL Server is up!"
-            break
-          fi
+          /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P StrongPassword123! -Q "SELECT 1" && break
           sleep 2
         done
 
